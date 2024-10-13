@@ -141,3 +141,36 @@ document.getElementById("email").oninput = function (event) {
 document.getElementById("message").oninput = function (event) {
   event.target.setCustomValidity("");
 };
+
+// Scroll Debouncing for Navbar
+let isScrolling;
+window.addEventListener("scroll", function () {
+  clearTimeout(isScrolling);
+  isScrolling = setTimeout(function () {
+    const navbar = document.querySelector(".navbar");
+    if (window.scrollY > 100) {
+      navbar.classList.add("scrolled");
+    } else {
+      navbar.classList.remove("scrolled");
+    }
+  }, 200); // 200ms debounce
+});
+
+// Local Storage for Form Data
+const nameInput = document.getElementById("name");
+const emailInput = document.getElementById("email");
+const messageInput = document.getElementById("message");
+
+nameInput.value = localStorage.getItem("name") || "";
+emailInput.value = localStorage.getItem("email") || "";
+messageInput.value = localStorage.getItem("message") || "";
+
+nameInput.addEventListener("input", () => {
+  localStorage.setItem("name", nameInput.value);
+});
+emailInput.addEventListener("input", () => {
+  localStorage.setItem("email", emailInput.value);
+});
+messageInput.addEventListener("input", () => {
+  localStorage.setItem("message", messageInput.value);
+});
