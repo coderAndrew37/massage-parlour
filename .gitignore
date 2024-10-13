@@ -1,0 +1,19 @@
+# Ignore environment variable files
+.env
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+
+# Build outputs
+dist/
+build/
+
+# Other files to ignore
+.DS_Store
