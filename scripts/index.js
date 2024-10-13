@@ -22,6 +22,32 @@ gsap.from(".cta-button", {
   delay: 1,
 });
 
+// GSAP Animation for Gallery Section
+gsap.from("#gallery .col-md-4", {
+  duration: 1,
+  opacity: 0,
+  y: 50,
+  stagger: 0.2,
+  ease: "power3.out",
+  scrollTrigger: {
+    trigger: "#gallery",
+    start: "top 80%",
+  },
+});
+
+// GSAP Animation for Testimonials Section
+gsap.from(".testimonial-box", {
+  duration: 1,
+  opacity: 0,
+  y: 50,
+  stagger: 0.3,
+  ease: "power3.out",
+  scrollTrigger: {
+    trigger: "#testimonials",
+    start: "top 80%",
+  },
+});
+
 // GSAP Animation for Why Choose Us Section
 gsap.from(".why-choose-us img", {
   duration: 1.2,
@@ -67,3 +93,51 @@ window.addEventListener("scroll", function () {
     navbar.classList.remove("scrolled");
   }
 });
+
+// Custom Bootstrap validation for the contact form with client-side validation
+(function () {
+  "use strict";
+  const forms = document.querySelectorAll(".needs-validation");
+
+  Array.prototype.slice.call(forms).forEach(function (form) {
+    form.addEventListener(
+      "submit",
+      function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        } else {
+          alert("Form submitted successfully!");
+        }
+        form.classList.add("was-validated");
+      },
+      false
+    );
+  });
+})();
+
+// Input field error message
+document.getElementById("name").oninvalid = function (event) {
+  event.target.setCustomValidity("Please provide your full name.");
+};
+
+document.getElementById("email").oninvalid = function (event) {
+  event.target.setCustomValidity("Please provide a valid email address.");
+};
+
+document.getElementById("message").oninvalid = function (event) {
+  event.target.setCustomValidity("Please enter your message.");
+};
+
+// Reset custom error message when user types
+document.getElementById("name").oninput = function (event) {
+  event.target.setCustomValidity("");
+};
+
+document.getElementById("email").oninput = function (event) {
+  event.target.setCustomValidity("");
+};
+
+document.getElementById("message").oninput = function (event) {
+  event.target.setCustomValidity("");
+};
