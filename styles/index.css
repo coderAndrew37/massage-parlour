@@ -134,9 +134,14 @@ footer a:hover {
 
 /* -------------------- Navbar -------------------- */
 
+/* Navbar - sticky at the top */
 .navbar-custom {
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensures it stays above other content */
   background-color: #333;
   padding: 10px;
+  width: 100%;
 }
 
 .navbar-custom .navbar-nav .nav-link {

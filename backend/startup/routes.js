@@ -1,14 +1,11 @@
 const express = require("express");
-const products = require("../routes/products"); // Ensure these files export router instances
-const users = require("../routes/users");
-const auth = require("../routes/auth");
-const cart = require("../routes/cart");
+const services = require("../routes/services");
+const testimonials = require("../routes/testimonials");
+const gallery = require("../routes/gallery");
 
 module.exports = function (app) {
   app.use(express.json());
-  app.use("/api/products", products); // Expecting products to be a middleware function (router)
-  app.use("/api/register", users); // Expecting users to be a middleware function (router)
-  app.use("/api/login", auth); // Expecting auth to be a middleware function (router)
-
-  app.use("/api/cart", cart);
+  app.use("/api/services", services);
+  app.use("/api/testimonials", testimonials);
+  app.use("/api/gallery", gallery);
 };
