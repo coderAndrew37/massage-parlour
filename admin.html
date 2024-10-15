@@ -11,37 +11,244 @@
       rel="stylesheet"
     />
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      crossorigin="anonymous"
-    />
     <link rel="stylesheet" href="styles/admin.css" />
   </head>
   <body>
-    <!-- Include header -->
-    <div id="header"></div>
+    <!-- Header -->
+    <header class="bg-blue-600 text-white py-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-3xl">Spa Admin Panel</h1>
+        <a href="#" class="btn bg-white text-blue-600 px-4 mx-4 py-2">Logout</a>
+      </div>
+    </header>
 
     <!-- Main Content Layout -->
     <div class="flex">
-      <!-- Include sidebar -->
-      <div id="sidebar"></div>
+      <!-- Sidebar -->
+      <aside class="w-64 bg-gray-200 p-4">
+        <ul class="space-y-4">
+          <li>
+            <a href="#services-section" class="block p-2 bg-blue-500 text-white"
+              >Manage Services</a
+            >
+          </li>
+          <li>
+            <a href="#gallery-section" class="block p-2 bg-blue-500 text-white"
+              >Manage Gallery</a
+            >
+          </li>
+          <li>
+            <a
+              href="#testimonials-section"
+              class="block p-2 bg-blue-500 text-white"
+              >Manage Testimonials</a
+            >
+          </li>
+        </ul>
+      </aside>
 
       <!-- Main content -->
       <main class="flex-1 p-4">
-        <!-- Include the services section -->
-        <div id="services-section"></div>
+        <!-- Services Section -->
+        <section id="services-section">
+          <h2 class="text-2xl mb-4">Manage Services</h2>
+          <button
+            class="btn bg-green-500 text-white mb-4"
+            onclick="openServiceModal()"
+          >
+            Add Service
+          </button>
+          <table class="w-full table-auto">
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="p-2">ID</th>
+                <th class="p-2">Service Name</th>
+                <th class="p-2">Image</th>
+                <th class="p-2">Price</th>
+                <th class="p-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="services-table-body">
+              <!-- Service rows will be dynamically injected here -->
+            </tbody>
+          </table>
+        </section>
 
-        <!-- Include the gallery section -->
-        <div id="gallery-section"></div>
+        <!-- Gallery Section -->
+        <section id="gallery-section" class="mt-8">
+          <h2 class="text-2xl mb-4">Manage Gallery</h2>
+          <button
+            class="btn bg-green-500 text-white mb-4"
+            onclick="openGalleryModal()"
+          >
+            Add Gallery Item
+          </button>
+          <table class="w-full table-auto">
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="p-2">ID</th>
+                <th class="p-2">Image</th>
+                <th class="p-2">Title</th>
+                <th class="p-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="gallery-table-body">
+              <!-- Gallery rows will be dynamically injected here -->
+            </tbody>
+          </table>
+        </section>
 
-        <!-- Include the testimonials section -->
-        <div id="testimonials-section"></div>
+        <!-- Testimonials Section -->
+        <section id="testimonials-section" class="mt-8">
+          <h2 class="text-2xl mb-4">Manage Testimonials</h2>
+          <button
+            class="btn bg-green-500 text-white mb-4"
+            onclick="openTestimonialModal()"
+          >
+            Add Testimonial
+          </button>
+          <table class="w-full table-auto">
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="p-2">ID</th>
+                <th class="p-2">Customer</th>
+                <th class="p-2">Image</th>
+                <th class="p-2">Testimonial</th>
+                <th class="p-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="testimonials-table-body">
+              <!-- Testimonial rows will be dynamically injected here -->
+            </tbody>
+          </table>
+        </section>
       </main>
     </div>
 
-    <!-- Include modals -->
-    <div id="modals"></div>
+    <!-- Modals Section -->
+    <div id="modals">
+      <!-- Service Modal -->
+      <div
+        id="service-modal"
+        class="modal hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center"
+      >
+        <div class="bg-white p-6 rounded-md w-1/2">
+          <h2 class="text-xl mb-4" id="service-modal-title">Add Service</h2>
+          <form id="service-form">
+            <input
+              type="text"
+              id="service-title"
+              placeholder="Title"
+              class="mb-2"
+            />
+            <textarea
+              id="service-description"
+              placeholder="Description"
+              class="mb-2"
+            ></textarea>
+            <input
+              type="number"
+              id="service-price"
+              placeholder="Price"
+              class="mb-2"
+            />
+            <input
+              type="text"
+              id="service-image"
+              placeholder="Image URL"
+              class="mb-2"
+            />
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded">
+              Save Service
+            </button>
+            <button
+              type="button"
+              class="bg-red-500 text-white p-2 rounded"
+              onclick="closeServiceModal()"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Gallery Modal -->
+      <div
+        id="gallery-modal"
+        class="modal hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center"
+      >
+        <div class="bg-white p-6 rounded-md w-1/2">
+          <h2 class="text-xl mb-4" id="gallery-modal-title">
+            Add Gallery Item
+          </h2>
+          <form id="gallery-form">
+            <input
+              type="text"
+              id="gallery-title"
+              placeholder="Title"
+              class="mb-2"
+            />
+            <input
+              type="text"
+              id="gallery-image"
+              placeholder="Image URL"
+              class="mb-2"
+            />
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded">
+              Save Gallery Item
+            </button>
+            <button
+              type="button"
+              class="bg-red-500 text-white p-2 rounded"
+              onclick="closeGalleryModal()"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Testimonial Modal -->
+      <div
+        id="testimonial-modal"
+        class="modal hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center"
+      >
+        <div class="bg-white p-6 rounded-md w-1/2">
+          <h2 class="text-xl mb-4" id="testimonial-modal-title">
+            Add Testimonial
+          </h2>
+          <form id="testimonial-form">
+            <input
+              type="text"
+              id="testimonial-name"
+              placeholder="Name"
+              class="mb-2"
+            />
+            <textarea
+              id="testimonial-quote"
+              placeholder="Quote"
+              class="mb-2"
+            ></textarea>
+            <input
+              type="text"
+              id="testimonial-image"
+              placeholder="Image URL"
+              class="mb-2"
+            />
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded">
+              Save Testimonial
+            </button>
+            <button
+              type="button"
+              class="bg-red-500 text-white p-2 rounded"
+              onclick="closeTestimonialModal()"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <!-- Load the JavaScript as a module -->
     <script src="scripts/admin.js" type="module"></script>

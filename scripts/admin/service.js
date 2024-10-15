@@ -1,3 +1,5 @@
+import { serviceStore } from "./store.js"; // Import the store
+
 const baseURL = "http://localhost:5500";
 
 // Fetch and display services
@@ -7,15 +9,15 @@ export async function fetchAndDisplayServices() {
 
   try {
     const response = await fetch(`${baseURL}/api/services`);
-
-    // Check if the response is OK (status 200-299)
-    if (!response.ok) {
+    if (!response.ok)
       throw new Error(`Error: ${response.status} ${response.statusText}`);
-    }
 
     const services = await response.json();
 
     services.forEach((service, index) => {
+      // Store service in the serviceStore
+      serviceStore[service._id] = service;
+
       const row = `
         <tr>
           <td>${index + 1}</td>
@@ -25,9 +27,9 @@ export async function fetchAndDisplayServices() {
       }" width="100" /></td>
           <td>${service.priceCents}</td>
           <td>
-            <button class="btn btn-secondary" onclick="openModal('service-modal', 'Edit Service', ${JSON.stringify(
-              service
-            )}, '${service._id}')">Edit</button>
+            <button class="btn btn-secondary" onclick="openServiceModal('${
+              service._id
+            }')">Edit</button>
             <button class="btn btn-danger" onclick="deleteService('${
               service._id
             }')">Delete</button>

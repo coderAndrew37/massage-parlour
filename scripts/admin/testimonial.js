@@ -1,3 +1,5 @@
+import { testimonialStore } from "./store.js"; // Import the store
+
 const baseURL = "http://localhost:5500";
 
 // Fetch and display testimonials
@@ -11,6 +13,9 @@ export async function fetchAndDisplayTestimonials() {
   const testimonials = await response.json();
 
   testimonials.forEach((testimonial, index) => {
+    // Store testimonial in testimonialStore
+    testimonialStore[testimonial._id] = testimonial;
+
     const row = `
       <tr>
         <td>${index + 1}</td>
@@ -20,9 +25,9 @@ export async function fetchAndDisplayTestimonials() {
     }" width="100" /></td>
         <td>${testimonial.quote}</td>
         <td>
-          <button class="btn btn-secondary" onclick="openModal('testimonial-modal', 'Edit Testimonial', ${JSON.stringify(
-            testimonial
-          )}, '${testimonial._id}')">Edit</button>
+          <button class="btn btn-secondary" onclick="openTestimonialModal('${
+            testimonial._id
+          }')">Edit</button>
           <button class="btn btn-danger" onclick="deleteTestimonial('${
             testimonial._id
           }')">Delete</button>
