@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel - Spa Management</title>
+    <!-- Favicon -->
+    <link rel="icon" href="images/hero_1.ico" type="image/x-icon" />
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
@@ -35,67 +37,7 @@
     <!-- Include modals -->
     <div id="modals"></div>
 
-    <!-- JavaScript -->
+    <!-- Load the JavaScript as a module -->
     <script src="scripts/admin.js" type="module"></script>
-    // JavaScript
-    <script>
-      // Load partials dynamically (example with fetch)
-      fetch("header.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("header").innerHTML = data));
-
-      fetch("sidebar.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("sidebar").innerHTML = data));
-
-      fetch("services-section.html")
-        .then((res) => res.text())
-        .then((data) => {
-          document.getElementById("services-section").innerHTML = data;
-          attachServiceListeners(); // Attach service form listeners
-        });
-
-      fetch("gallery-section.html")
-        .then((res) => res.text())
-        .then((data) => {
-          document.getElementById("gallery-section").innerHTML = data;
-          attachGalleryListeners(); // Attach gallery form listeners
-        });
-
-      fetch("testimonials-section.html")
-        .then((res) => res.text())
-        .then((data) => {
-          document.getElementById("testimonials-section").innerHTML = data;
-          attachTestimonialListeners(); // Attach testimonial form listeners
-        });
-
-      fetch("modals.html")
-        .then((res) => res.text())
-        .then((data) => (document.getElementById("modals").innerHTML = data));
-
-      // Function to attach listeners to service form
-      function attachServiceListeners() {
-        const serviceForm = document.getElementById("service-form");
-        if (serviceForm) {
-          serviceForm.addEventListener("submit", saveService);
-        }
-      }
-
-      // Function to attach listeners to gallery form
-      function attachGalleryListeners() {
-        const galleryForm = document.getElementById("gallery-form");
-        if (galleryForm) {
-          galleryForm.addEventListener("submit", saveGallery);
-        }
-      }
-
-      // Function to attach listeners to testimonial form
-      function attachTestimonialListeners() {
-        const testimonialForm = document.getElementById("testimonial-form");
-        if (testimonialForm) {
-          testimonialForm.addEventListener("submit", saveTestimonial);
-        }
-      }
-    </script>
   </body>
 </html>
