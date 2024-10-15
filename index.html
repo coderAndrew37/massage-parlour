@@ -85,10 +85,11 @@
               </ul>
             </li>
           </ul>
-          <form class="d-flex" role="search">
+          <form class="d-flex" id="searchForm">
             <input
               class="form-control me-2"
               type="search"
+              id="searchQuery"
               placeholder="Search"
               aria-label="Search"
             />
@@ -151,62 +152,9 @@
     <!-- Services Section -->
     <section class="container text-center" id="services">
       <h2>Our Services</h2>
-      <div class="row">
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <img
-              src="images/hero_1.jpg"
-              class="card-img-top"
-              alt="Massage Therapy"
-              loading="lazy"
-            />
-            <div class="card-body">
-              <h5 class="card-title">Massage Therapy</h5>
-              <p class="card-text">
-                Relax and rejuvenate with our expert massage services.
-              </p>
-              <a href="https://wa.me/254746577838" class="btn btn-primary"
-                >Book Now</a
-              >
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <img
-              src="images/hero_1.jpg"
-              class="card-img-top"
-              alt="Facial Treatments"
-              loading="lazy"
-            />
-            <div class="card-body">
-              <h5 class="card-title">Facial Treatments</h5>
-              <p class="card-text">
-                Nourishing facials for radiant, healthy skin.
-              </p>
-              <a href="#" class="btn btn-primary">Learn More</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <img
-              src="images/hero_1.jpg"
-              class="card-img-top"
-              alt="Manicure & Pedicure"
-              loading="lazy"
-            />
-            <div class="card-body">
-              <h5 class="card-title">Manicure & Pedicure</h5>
-              <p class="card-text">
-                Pamper yourself with our deluxe nail treatments.
-              </p>
-              <a href="https://wa.me/254746577838" class="btn btn-primary"
-                >Book Now</a
-              >
-            </div>
-          </div>
-        </div>
+      <div class="row js-services-grid">
+        <!-- Add this div for services -->
+        <!-- Dynamic content will be injected here -->
       </div>
     </section>
 
@@ -214,34 +162,9 @@
     <section id="gallery" class="py-5">
       <div class="container text-center">
         <h2>Our Spa</h2>
-        <div class="row">
-          <div class="col-md-4">
-            <img src="images/hero_1.jpg" alt="Spa Room" />
-            <div class="gallery-overlay">
-              <div class="gallery-text">Spa Room</div>
-              <a href="https://wa.me/254746577838" class="book-now-link"
-                >Book Now</a
-              >
-            </div>
-          </div>
-          <div class="col-md-4">
-            <img src="images/hero_1.jpg" alt="Massage Therapy" />
-            <div class="gallery-overlay">
-              <div class="gallery-text">Massage Therapy</div>
-              <a href="https://wa.me/254746577838" class="book-now-link"
-                >Book Now</a
-              >
-            </div>
-          </div>
-          <div class="col-md-4">
-            <img src="images/hero_1.jpg" alt="Facial Treatment" />
-            <div class="gallery-overlay">
-              <div class="gallery-text">Facial Treatment</div>
-              <a href="https://wa.me/254746577838" class="book-now-link"
-                >Book Now</a
-              >
-            </div>
-          </div>
+        <div class="row js-gallery-grid">
+          <!-- Add this div for gallery -->
+          <!-- Dynamic content will be injected here -->
         </div>
       </div>
     </section>
@@ -250,40 +173,9 @@
     <section id="testimonials" class="py-5 bg-light">
       <div class="container text-center">
         <h2>What Our Clients Say</h2>
-        <div class="row">
-          <div class="col-md-4">
-            <div class="testimonial-box">
-              <img src="images/hero_1.jpg" alt="Customer Image" />
-              <blockquote class="blockquote">
-                <p>
-                  "The best massage I've ever had! Professional and relaxing."
-                </p>
-                <footer class="blockquote-footer">Sarah M.</footer>
-              </blockquote>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="testimonial-box">
-              <img src="images/hero_1.jpg" alt="Customer Image" />
-              <blockquote class="blockquote">
-                <p>
-                  "Amazing facial treatment, my skin has never felt better!"
-                </p>
-                <footer class="blockquote-footer">James K.</footer>
-              </blockquote>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="testimonial-box">
-              <img src="images/hero_1.jpg" alt="Customer Image" />
-              <blockquote class="blockquote">
-                <p>
-                  "A true sanctuary for the soul. Highly recommend this spa."
-                </p>
-                <footer class="blockquote-footer">Emily R.</footer>
-              </blockquote>
-            </div>
-          </div>
+        <div class="row js-testimonials-grid">
+          <!-- Add this div for testimonials -->
+          <!-- Dynamic content will be injected here -->
         </div>
       </div>
     </section>
@@ -414,52 +306,53 @@
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center p-4">
+    <!-- Footer Section -->
+    <footer class="footer py-4">
       <div class="container">
         <div class="row">
-          <div class="col-md-4 mb-3">
-            <h5>Contact Us</h5>
+          <!-- About Us Column -->
+          <div class="col-md-4">
+            <h5>About Equator Spa</h5>
             <p>
-              <i class="fas fa-envelope"></i>
-              <a href="mailto:info@getintouch.we" class="text-white"
-                >info@getintouch.we</a
-              >
-            </p>
-            <p>
-              <i class="fas fa-phone"></i>
-              <a href="tel:+245689146" class="text-white">+24 56 89 146</a>
+              Equator Spa is dedicated to providing a luxurious experience with
+              natural products and expert therapists. Relax, rejuvenate, and
+              unwind.
             </p>
           </div>
-          <div class="col-md-4 mb-3">
+
+          <!-- Quick Links Column -->
+          <div class="col-md-4">
             <h5>Quick Links</h5>
             <ul class="list-unstyled">
-              <li><a href="#hero" class="text-white">Home</a></li>
-              <li><a href="#services" class="text-white">Services</a></li>
-              <li><a href="#contact-us" class="text-white">Contact Us</a></li>
-              <li><a href="#pricing" class="text-white">Pricing</a></li>
+              <li><a href="#services">Our Services</a></li>
+              <li><a href="#about-us">Why Choose Us</a></li>
+              <li><a href="#pricing">Pricing</a></li>
+              <li><a href="#faq">FAQs</a></li>
+              <li><a href="#contact-us">Contact Us</a></li>
             </ul>
           </div>
-          <div class="col-md-4 mb-3">
-            <h5>Follow Us</h5>
-            <a href="https://facebook.com" class="text-white me-2"
-              ><i class="fab fa-facebook-f"></i
-            ></a>
-            <a href="https://twitter.com" class="text-white me-2"
-              ><i class="fab fa-twitter"></i
-            ></a>
-            <a href="https://instagram.com" class="text-white"
-              ><i class="fab fa-instagram"></i
-            ></a>
+
+          <!-- Contact Info Column -->
+          <div class="col-md-4">
+            <h5>Get In Touch</h5>
+            <p><i class="fas fa-envelope"></i> info@getintouch.we</p>
+            <p><i class="fas fa-phone"></i> +24 56 89 146</p>
+            <p><i class="fas fa-map-marker-alt"></i> 14 Greenroad St.</p>
+
+            <!-- Social Media Icons -->
+            <div class="social-icons mt-3">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
           </div>
         </div>
-        <hr class="bg-light" />
-        <p>&copy; 2024 Equator Spa. All rights reserved.</p>
-        <p>
-          <a href="https://wa.me/254746577838" class="text-white"
-            >Contact us on WhatsApp</a
-          >
-        </p>
+      </div>
+
+      <!-- Footer Bottom Text -->
+      <div class="text-center py-3">
+        <p>&copy; 2024 Equator Spa. All Rights Reserved.</p>
       </div>
     </footer>
 

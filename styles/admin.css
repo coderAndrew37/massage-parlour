@@ -1,0 +1,32 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+header {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar a:hover {
+  background-color: #2b6cb0;
+  color: white;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+table th {
+  background-color: #f8f9fa;
+}
