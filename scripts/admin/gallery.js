@@ -60,7 +60,7 @@ async function saveGallery(event) {
 }
 
 // Delete gallery item
-async function deleteGalleryItem(itemId) {
+export async function deleteGalleryItem(itemId) {
   if (confirm("Are you sure you want to delete this gallery item?")) {
     try {
       await fetch(`${baseURL}/api/gallery/${itemId}`, { method: "DELETE" });

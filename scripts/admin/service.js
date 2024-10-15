@@ -76,7 +76,7 @@ async function saveService(event) {
 }
 
 // Example for delete function (add more as needed)
-async function deleteService(serviceId) {
+export async function deleteService(serviceId) {
   if (confirm("Are you sure you want to delete this service?")) {
     try {
       await fetch(`${baseURL}/api/services/${serviceId}`, { method: "DELETE" });

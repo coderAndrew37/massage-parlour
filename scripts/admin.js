@@ -1,15 +1,21 @@
 import {
   fetchAndDisplayServices,
   attachServiceListeners,
+  deleteService, // Import deleteService function
 } from "./admin/service.js";
+
 import {
   fetchAndDisplayGallery,
   attachGalleryListeners,
+  deleteGalleryItem, // Import deleteGalleryItem function
 } from "./admin/gallery.js";
+
 import {
   fetchAndDisplayTestimonials,
   attachTestimonialListeners,
+  deleteTestimonial, // Import deleteTestimonial function
 } from "./admin/testimonial.js";
+
 import { openModal, closeModal } from "./admin/modals.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -62,4 +68,11 @@ document.addEventListener("DOMContentLoaded", () => {
       waitForSectionsToLoad(); // Start checking after all sections are loaded
     });
   }
+
+  // Attach functions to the window object so they are globally accessible in HTML
+  window.openModal = openModal;
+  window.closeModal = closeModal;
+  window.deleteService = deleteService; // Attach deleteService to window
+  window.deleteGalleryItem = deleteGalleryItem; // Attach deleteGalleryItem to window
+  window.deleteTestimonial = deleteTestimonial; // Attach deleteTestimonial to window
 });

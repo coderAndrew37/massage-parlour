@@ -66,7 +66,7 @@ async function saveTestimonial(event) {
 }
 
 // Delete testimonial
-async function deleteTestimonial(testimonialId) {
+export async function deleteTestimonial(testimonialId) {
   if (confirm("Are you sure you want to delete this testimonial?")) {
     try {
       await fetch(`${baseURL}/api/testimonials/${testimonialId}`, {
