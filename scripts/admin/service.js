@@ -52,14 +52,44 @@ export function attachServiceListeners() {
   }
 }
 
+// Open service modal with existing service data
+window.openServiceModal = (serviceId) => {
+  const service = serviceStore[serviceId];
+  document.getElementById("service-modal-title").innerText = "Edit Service";
+  document.getElementById("service-title").value = service.title;
+  document.getElementById("service-description").value = service.description;
+  document.getElementById("service-price").value = service.priceCents;
+
+  // Set the current image
+  document.getElementById("service-current-image").src = service.image;
+  document.getElementById("service-image-url").value = service.image; // Store the current image URL
+
+  document.getElementById("service-modal").classList.remove("hidden");
+};
+
+// Close the service modal
+window.closeServiceModal = () => {
+  document.getElementById("service-modal").classList.add("hidden");
+};
+
 // Save service (add or edit)
 async function saveService(event) {
   event.preventDefault();
+
+  // Check if a new image was uploaded
+  const imageFileInput = document.getElementById("service-image-file");
+  let imageUrl = document.getElementById("service-image-url").value;
+
+  if (imageFileInput.files.length > 0) {
+    const imageFile = imageFileInput.files[0];
+    imageUrl = await uploadImage(imageFile); // Upload new image and get URL
+  }
+
   const serviceData = {
     title: document.getElementById("service-title").value,
     description: document.getElementById("service-description").value,
     priceCents: parseInt(document.getElementById("service-price").value),
-    image: document.getElementById("service-image").value,
+    image: imageUrl, // Use the new or existing image URL
   };
 
   const url = editingServiceId
@@ -73,11 +103,11 @@ async function saveService(event) {
     body: JSON.stringify(serviceData),
   });
 
-  closeModal("service-modal");
+  closeServiceModal();
   fetchAndDisplayServices(); // Refresh the services list
 }
 
-// Example for delete function (add more as needed)
+// Delete service
 export async function deleteService(serviceId) {
   if (confirm("Are you sure you want to delete this service?")) {
     try {
@@ -87,4 +117,18 @@ export async function deleteService(serviceId) {
       console.error("Failed to delete service", error);
     }
   }
+}
+
+// Function to handle image upload
+async function uploadImage(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await fetch(`${baseURL}/api/upload`, {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await response.json();
+  return data.url; // Return uploaded image URL
 }

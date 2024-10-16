@@ -7,30 +7,38 @@ export async function fetchAndDisplayGallery() {
   const galleryTableBody = document.getElementById("gallery-table-body");
   galleryTableBody.innerHTML = "";
 
-  const response = await fetch(`${baseURL}/api/gallery`);
-  const galleryItems = await response.json();
+  try {
+    const response = await fetch(`${baseURL}/api/gallery`);
+    if (!response.ok)
+      throw new Error(`Error: ${response.status} ${response.statusText}`);
 
-  galleryItems.forEach((item, index) => {
-    // Store gallery item in galleryStore
-    galleryStore[item._id] = item;
+    const galleryItems = await response.json();
 
-    const row = `
-      <tr>
-        <td>${index + 1}</td>
-        <td><img src="${item.image}" alt="${item.title}" width="100" /></td>
-        <td>${item.title}</td>
-        <td>
-          <button class="btn btn-secondary" onclick="openGalleryModal('${
-            item._id
-          }')">Edit</button>
-          <button class="btn btn-danger" onclick="deleteGalleryItem('${
-            item._id
-          }')">Delete</button>
-        </td>
-      </tr>
-    `;
-    galleryTableBody.insertAdjacentHTML("beforeend", row);
-  });
+    galleryItems.forEach((item, index) => {
+      // Store gallery item in galleryStore
+      galleryStore[item._id] = item;
+
+      const row = `
+        <tr>
+          <td>${index + 1}</td>
+          <td><img src="${item.image}" alt="${item.title}" width="100" /></td>
+          <td>${item.title}</td>
+          <td>
+            <button class="btn btn-secondary" onclick="openGalleryModal('${
+              item._id
+            }')">Edit</button>
+            <button class="btn btn-danger" onclick="deleteGalleryItem('${
+              item._id
+            }')">Delete</button>
+          </td>
+        </tr>
+      `;
+      galleryTableBody.insertAdjacentHTML("beforeend", row);
+    });
+  } catch (error) {
+    console.error("Failed to fetch gallery items", error);
+    galleryTableBody.innerHTML = `<tr><td colspan="4">Failed to load gallery: ${error.message}</td></tr>`;
+  }
 }
 
 // Add event listeners for the gallery section
@@ -41,12 +49,41 @@ export function attachGalleryListeners() {
   }
 }
 
-// Save gallery item
+// Open gallery modal with existing gallery item data
+window.openGalleryModal = (itemId) => {
+  const item = galleryStore[itemId];
+  document.getElementById("gallery-modal-title").innerText =
+    "Edit Gallery Item";
+  document.getElementById("gallery-title").value = item.title;
+
+  // Set the current image
+  document.getElementById("gallery-current-image").src = item.image;
+  document.getElementById("gallery-image-url").value = item.image; // Store the current image URL
+
+  document.getElementById("gallery-modal").classList.remove("hidden");
+};
+
+// Close the gallery modal
+window.closeGalleryModal = () => {
+  document.getElementById("gallery-modal").classList.add("hidden");
+};
+
+// Save gallery item (add or edit)
 async function saveGallery(event) {
   event.preventDefault();
+
+  // Check if a new image was uploaded
+  const imageFileInput = document.getElementById("gallery-image-file");
+  let imageUrl = document.getElementById("gallery-image-url").value;
+
+  if (imageFileInput.files.length > 0) {
+    const imageFile = imageFileInput.files[0];
+    imageUrl = await uploadImage(imageFile); // Upload new image and get URL
+  }
+
   const galleryData = {
     title: document.getElementById("gallery-title").value,
-    image: document.getElementById("gallery-image").value,
+    image: imageUrl, // Use the new or existing image URL
   };
 
   const url = editingGalleryId
@@ -60,7 +97,7 @@ async function saveGallery(event) {
     body: JSON.stringify(galleryData),
   });
 
-  closeModal("gallery-modal");
+  closeGalleryModal();
   fetchAndDisplayGallery(); // Refresh the gallery list
 }
 
@@ -74,4 +111,18 @@ export async function deleteGalleryItem(itemId) {
       console.error("Failed to delete gallery item", error);
     }
   }
+}
+
+// Function to handle image upload
+async function uploadImage(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await fetch(`${baseURL}/api/upload`, {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await response.json();
+  return data.url; // Return uploaded image URL
 }

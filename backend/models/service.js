@@ -8,6 +8,7 @@ const serviceSchema = new mongoose.Schema(
     title: { type: String, required: true, minlength: 3, maxlength: 100 }, // Service title
     description: { type: String, required: true, minlength: 10 }, // Service description
     priceCents: { type: Number, required: true, min: 0 }, // Price in cents
+    slug: { type: String, required: false, unique: true },
   },
   { timestamps: true } // Add createdAt and updatedAt timestamps
 );

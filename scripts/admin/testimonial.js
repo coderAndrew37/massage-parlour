@@ -9,33 +9,41 @@ export async function fetchAndDisplayTestimonials() {
   );
   testimonialsTableBody.innerHTML = "";
 
-  const response = await fetch(`${baseURL}/api/testimonials`);
-  const testimonials = await response.json();
+  try {
+    const response = await fetch(`${baseURL}/api/testimonials`);
+    if (!response.ok)
+      throw new Error(`Error: ${response.status} ${response.statusText}`);
 
-  testimonials.forEach((testimonial, index) => {
-    // Store testimonial in testimonialStore
-    testimonialStore[testimonial._id] = testimonial;
+    const testimonials = await response.json();
 
-    const row = `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${testimonial.name}</td>
-        <td><img src="${testimonial.image}" alt="${
-      testimonial.name
-    }" width="100" /></td>
-        <td>${testimonial.quote}</td>
-        <td>
-          <button class="btn btn-secondary" onclick="openTestimonialModal('${
-            testimonial._id
-          }')">Edit</button>
-          <button class="btn btn-danger" onclick="deleteTestimonial('${
-            testimonial._id
-          }')">Delete</button>
-        </td>
-      </tr>
-    `;
-    testimonialsTableBody.insertAdjacentHTML("beforeend", row);
-  });
+    testimonials.forEach((testimonial, index) => {
+      // Store testimonial in testimonialStore
+      testimonialStore[testimonial._id] = testimonial;
+
+      const row = `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${testimonial.name}</td>
+          <td><img src="${testimonial.image}" alt="${
+        testimonial.name
+      }" width="100" /></td>
+          <td>${testimonial.quote}</td>
+          <td>
+            <button class="btn btn-secondary" onclick="openTestimonialModal('${
+              testimonial._id
+            }')">Edit</button>
+            <button class="btn btn-danger" onclick="deleteTestimonial('${
+              testimonial._id
+            }')">Delete</button>
+          </td>
+        </tr>
+      `;
+      testimonialsTableBody.insertAdjacentHTML("beforeend", row);
+    });
+  } catch (error) {
+    console.error("Failed to fetch testimonials", error);
+    testimonialsTableBody.innerHTML = `<tr><td colspan="5">Failed to load testimonials: ${error.message}</td></tr>`;
+  }
 }
 
 // Add event listeners for the testimonials section
@@ -46,13 +54,43 @@ export function attachTestimonialListeners() {
   }
 }
 
-// Save testimonial
+// Open testimonial modal with existing testimonial data
+window.openTestimonialModal = (testimonialId) => {
+  const testimonial = testimonialStore[testimonialId];
+  document.getElementById("testimonial-modal-title").innerText =
+    "Edit Testimonial";
+  document.getElementById("testimonial-name").value = testimonial.name;
+  document.getElementById("testimonial-quote").value = testimonial.quote;
+
+  // Set the current image
+  document.getElementById("testimonial-current-image").src = testimonial.image;
+  document.getElementById("testimonial-image-url").value = testimonial.image; // Store the current image URL
+
+  document.getElementById("testimonial-modal").classList.remove("hidden");
+};
+
+// Close the testimonial modal
+window.closeTestimonialModal = () => {
+  document.getElementById("testimonial-modal").classList.add("hidden");
+};
+
+// Save testimonial (add or edit)
 async function saveTestimonial(event) {
   event.preventDefault();
+
+  // Check if a new image was uploaded
+  const imageFileInput = document.getElementById("testimonial-image-file");
+  let imageUrl = document.getElementById("testimonial-image-url").value;
+
+  if (imageFileInput.files.length > 0) {
+    const imageFile = imageFileInput.files[0];
+    imageUrl = await uploadImage(imageFile); // Upload new image and get URL
+  }
+
   const testimonialData = {
     name: document.getElementById("testimonial-name").value,
     quote: document.getElementById("testimonial-quote").value,
-    image: document.getElementById("testimonial-image").value,
+    image: imageUrl, // Use the new or existing image URL
   };
 
   const url = editingTestimonialId
@@ -66,7 +104,7 @@ async function saveTestimonial(event) {
     body: JSON.stringify(testimonialData),
   });
 
-  closeModal("testimonial-modal");
+  closeTestimonialModal();
   fetchAndDisplayTestimonials(); // Refresh the testimonial list
 }
 
@@ -82,4 +120,18 @@ export async function deleteTestimonial(testimonialId) {
       console.error("Failed to delete testimonial", error);
     }
   }
+}
+
+// Function to handle image upload
+async function uploadImage(file) {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await fetch(`${baseURL}/api/upload`, {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await response.json();
+  return data.url; // Return uploaded image URL
 }

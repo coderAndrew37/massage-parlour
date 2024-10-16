@@ -48,18 +48,6 @@ gsap.from("#faqAccordion .accordion-item", {
   },
 });
 
-// GSAP Animation for Footer Section
-gsap.from("footer", {
-  duration: 1.5,
-  opacity: 0,
-  y: 50,
-  ease: "power3.out",
-  scrollTrigger: {
-    trigger: "footer",
-    start: "top 90%", // Trigger the animation when the footer is close to view
-  },
-});
-
 // animations.js
 
 // GSAP Animation for Hero Section

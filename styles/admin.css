@@ -4,9 +4,20 @@ body {
 
 header {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  z-index: 1000; /* Ensures it stays above other content */
 }
 
-.sidebar a:hover {
+aside {
+  position: fixed;
+  top: 64px; /* Height of the navbar (header) */
+  left: 0;
+  width: 16rem; /* Sidebar width */
+  height: calc(100vh - 64px); /* Full height minus the navbar height */
+  overflow-y: auto; /* Add scroll if content exceeds height */
+}
+
+aside a:hover {
   background-color: #2b6cb0;
   color: white;
 }
@@ -29,4 +40,10 @@ table td {
 
 table th {
   background-color: #f8f9fa;
+}
+
+main {
+  padding: 20px;
+  padding-left: 16rem; /* Matches the sidebar width */
+  padding-top: 100px; /* Ensure content doesn't overlap with the header */
 }

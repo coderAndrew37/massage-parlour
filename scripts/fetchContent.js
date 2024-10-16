@@ -29,6 +29,10 @@ async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
 async function renderServicesGrid() {
   try {
     const services = await fetchWithRetry(`${baseURL}/api/services`);
+
+    // Log services to check if slugs are present
+    console.log(services); // Debugging step
+
     const servicesHTML = services
       .map(
         (service) => `
@@ -38,7 +42,7 @@ async function renderServicesGrid() {
           <div class="card-body">
             <h5 class="card-title">${service.title}</h5>
             <p class="card-text">${service.description}</p>
-            <a href="https://wa.me/254746577838" class="btn btn-primary">Book Now</a>
+            <a href="/service-details.html?slug=${service.slug}" class="btn btn-primary">Learn More</a>
           </div>
         </div>
       </div>
