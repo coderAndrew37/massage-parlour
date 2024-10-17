@@ -32,18 +32,24 @@ router.get("/:slug", async (req, res) => {
 
 // Protected route: Add a new service (admin only, assumes isAdmin middleware)
 router.post("/", async (req, res) => {
+  // Validate the incoming service data
   const { error } = validateService(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
+  // Create a new service object
   const service = new Service({
     title: req.body.title,
     description: req.body.description,
     priceCents: req.body.priceCents,
     image: req.body.image,
-    slug: slugify(req.body.title, { lower: true }),
+    slug: slugify(req.body.title, { lower: true }), // Generate a slug from the title
+    additionalImages: req.body.additionalImages, // Add additional images
+    videoUrl: req.body.videoUrl, // Add video URL if provided
+    benefits: req.body.benefits, // Add benefits if provided
   });
 
   try {
+    // Save the service to the database
     await service.save();
     res.status(201).json(service);
   } catch (error) {
