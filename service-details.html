@@ -10,6 +10,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/service-details.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -19,7 +20,38 @@
   <body>
     <!-- Navbar (reuse the same navbar from your main page) -->
     <nav class="navbar navbar-expand-lg navbar-custom">
-      <!-- Navbar content -->
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img
+            src="images/hero_1.jpg"
+            alt="Equator Spa"
+            width="30"
+            height="30"
+            class="d-inline-block align-text-top"
+          />
+          Equator Spa
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="index.html"
+                >Home</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
     </nav>
 
     <!-- Service Information Section -->
@@ -100,6 +132,6 @@
     ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
-    <script src="scripts/serviceDetails.js"></script>
+    <script src="scripts/serviceDetails.js" type="module"></script>
   </body>
 </html>

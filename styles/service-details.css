@@ -1,0 +1,45 @@
+/* Additional styling for images and benefits */
+#additional-images {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#additional-images img {
+  max-width: 100%;
+  height: 250px; /* Set uniform height */
+  object-fit: cover; /* Maintain aspect ratio */
+}
+
+/* Responsive layout for additional images */
+#additional-images .col-lg-4,
+#additional-images .col-md-6,
+#additional-images .col-sm-12 {
+  padding: 5px;
+}
+
+/* Benefits styling */
+#service-benefits li {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.benefit-text {
+  font-weight: bold;
+}
+
+#service-benefits i {
+  color: red; /* Change icon color to red */
+}
+
+/* Styled Price */
+#service-price {
+  font-size: 2rem;
+  color: #28a745; /* Green for price */
+  font-weight: bold;
+}
+
+/* Video section styling */
+#service-video {
+  width: 100%;
+  height: auto;
+}
