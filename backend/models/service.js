@@ -17,6 +17,9 @@ const serviceSchema = new mongoose.Schema(
         description: { type: String, required: true }, // Description of the benefit
       },
     ],
+    relatedServiceIds: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Service" },
+    ], // Related services as ObjectIds
   },
   { timestamps: true }
 );
@@ -40,6 +43,9 @@ function validateService(service) {
         description: Joi.string().required(),
       })
     ),
+    relatedServiceIds: Joi.array()
+      .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+      .optional(), // Validate as array of valid ObjectId strings
   });
 
   return schema.validate(service);

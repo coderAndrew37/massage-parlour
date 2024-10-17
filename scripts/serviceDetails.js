@@ -78,7 +78,7 @@ if (!slug) {
       // Inject video URL
       const serviceVideo = document.getElementById("service-video-source");
       if (service.videoUrl) {
-        serviceVideo.src = `${baseURL}/${service.videoUrl}`;
+        serviceVideo.src = `${baseURL}/images/${service.videoUrl}`;
       } else {
         document.getElementById("service-video").style.display = "none"; // Hide video section if no video
       }
