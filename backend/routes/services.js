@@ -1,17 +1,46 @@
 const express = require("express");
 const { Service, validateService } = require("../models/service"); // Import model and validation function
 const router = express.Router();
+
+// Helper function to generate unique slugs
+
+async function generateUniqueSlug(title) {
+  const slug = slugify(title, { lower: true });
+  const existingService = await Service.findOne({ slug });
+
+  if (existingService) {
+    return `${slug}-${existingService._id}`;
+  }
+
+  return slug;
+}
 // Helper function to slugify a string
 const slugify = require("slugify");
 
-// Public route: Fetch all services
+// Helper function for pagination
+function paginate(array, page, limit) {
+  return array.slice((page - 1) * limit, page * limit);
+}
+
+// Public route: Fetch all services with pagination
 router.get("/", async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 6; // Default limit to 6 services per page
+
   try {
     const services = await Service.find();
     if (!services.length) {
       return res.status(404).json({ message: "No services found" });
     }
-    res.json(services);
+
+    const paginatedServices = paginate(services, page, limit);
+    const totalPages = Math.ceil(services.length / limit);
+
+    res.json({
+      services: paginatedServices,
+      currentPage: page,
+      totalPages: totalPages,
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch services" });
   }
@@ -83,7 +112,5 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to delete service" });
   }
 });
-
-module.exports = router;
 
 module.exports = router;

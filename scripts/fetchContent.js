@@ -6,6 +6,12 @@ import {
 
 const baseURL = "http://localhost:5500"; // Correct backend server URL
 
+// Spinner element
+const spinner = document.createElement("div");
+spinner.classList.add("spinner-border", "text-primary");
+spinner.setAttribute("role", "status");
+spinner.innerHTML = '<span class="visually-hidden">Loading...</span>';
+
 // Helper function for retrying fetch requests
 async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
   try {
@@ -25,13 +31,47 @@ async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
   }
 }
 
-// Fetch and Render Services
-async function renderServicesGrid() {
-  try {
-    const services = await fetchWithRetry(`${baseURL}/api/services`);
+// Helper function to get elements per page based on section and screen size
+function getElementsPerPage(section) {
+  if (section === "services") {
+    return window.innerWidth >= 992 ? 9 : 6; // 9 services for large screens, 6 for small screens
+  }
+  if (section === "testimonials" || section === "gallery") {
+    return window.innerWidth >= 992 ? 6 : 3; // 6 elements for large screens, 3 for small screens
+  }
+  return 3; // Default to 3
+}
 
-    // Log services to check if slugs are present
-    console.log(services); // Debugging step
+// Scroll to a specific section
+function scrollToSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    window.scrollTo({
+      top: section.offsetTop - 100, // Adjust offset if needed
+      behavior: "smooth",
+    });
+  }
+}
+
+/* ============= SERVICES SECTION WITH PAGINATION ============= */
+
+// Fetch and Render Services with Pagination
+async function renderServicesGrid(page = 1) {
+  const limit = getElementsPerPage("services");
+  const servicesGrid = document.querySelector(".js-services-grid");
+
+  try {
+    servicesGrid.innerHTML = ""; // Clear previous content
+    servicesGrid.appendChild(spinner); // Show loading spinner
+
+    const { services, currentPage, totalPages } = await fetchWithRetry(
+      `${baseURL}/api/services?page=${page}&limit=${limit}`
+    );
+
+    if (!services.length) {
+      servicesGrid.innerHTML = "<p>No services available at this time.</p>";
+      return;
+    }
 
     const servicesHTML = services
       .map(
@@ -50,24 +90,46 @@ async function renderServicesGrid() {
       )
       .join("");
 
-    document.querySelector(".js-services-grid").innerHTML = servicesHTML;
+    servicesGrid.innerHTML = servicesHTML; // Replace spinner with content
+    renderPaginationControls(currentPage, totalPages, "services");
 
-    // Trigger GSAP animation for services after the content is rendered
+    // Scroll to the services section after loading
+    scrollToSection("services");
+
     animateServices();
-    ScrollTrigger.refresh(); // Refresh ScrollTrigger to include new elements
+    ScrollTrigger.refresh();
   } catch (error) {
     console.error("Error fetching services:", error);
+    servicesGrid.innerHTML =
+      "<p>Error loading services. Please try again later.</p>";
   }
 }
 
-// Fetch and Render Testimonials
-async function renderTestimonialsGrid() {
+/* ============= TESTIMONIALS SECTION WITH PAGINATION ============= */
+
+// Fetch and Render Testimonials with Pagination
+async function renderTestimonialsGrid(page = 1) {
+  const limit = getElementsPerPage("testimonials");
+  const testimonialsGrid = document.querySelector(".js-testimonials-grid");
+
   try {
-    const testimonials = await fetchWithRetry(`${baseURL}/api/testimonials`);
+    testimonialsGrid.innerHTML = ""; // Clear previous content
+    testimonialsGrid.appendChild(spinner); // Show loading spinner
+
+    const { testimonials, currentPage, totalPages } = await fetchWithRetry(
+      `${baseURL}/api/testimonials?page=${page}&limit=${limit}`
+    );
+
+    if (!testimonials.length) {
+      testimonialsGrid.innerHTML =
+        "<p>No testimonials available at this time.</p>";
+      return;
+    }
+
     const testimonialsHTML = testimonials
       .map(
         (testimonial) => `
-      <div class="col-md-4">
+      <div class="col-md-4 mb-4">
         <div class="testimonial-box">
           <img src="${testimonial.image}" alt="${testimonial.name}" />
           <blockquote class="blockquote">
@@ -80,25 +142,45 @@ async function renderTestimonialsGrid() {
       )
       .join("");
 
-    document.querySelector(".js-testimonials-grid").innerHTML =
-      testimonialsHTML;
+    testimonialsGrid.innerHTML = testimonialsHTML; // Replace spinner with content
+    renderPaginationControls(currentPage, totalPages, "testimonials");
 
-    // Trigger GSAP animation for testimonials after the content is rendered
+    // Scroll to the testimonials section after loading
+    scrollToSection("testimonials");
+
     animateTestimonials();
-    ScrollTrigger.refresh(); // Refresh ScrollTrigger to include new elements
+    ScrollTrigger.refresh();
   } catch (error) {
     console.error("Error fetching testimonials:", error);
+    testimonialsGrid.innerHTML =
+      "<p>Error loading testimonials. Please try again later.</p>";
   }
 }
 
-// Fetch and Render Gallery
-async function renderGalleryGrid() {
+/* ============= GALLERY SECTION WITH PAGINATION ============= */
+
+// Fetch and Render Gallery with Pagination
+async function renderGalleryGrid(page = 1) {
+  const limit = getElementsPerPage("gallery");
+  const galleryGrid = document.querySelector(".js-gallery-grid");
+
   try {
-    const galleryItems = await fetchWithRetry(`${baseURL}/api/gallery`);
-    const galleryHTML = galleryItems
+    galleryGrid.innerHTML = ""; // Clear previous content
+    galleryGrid.appendChild(spinner); // Show loading spinner
+
+    const { gallery, currentPage, totalPages } = await fetchWithRetry(
+      `${baseURL}/api/gallery?page=${page}&limit=${limit}`
+    );
+
+    if (!gallery.length) {
+      galleryGrid.innerHTML = "<p>No gallery items available at this time.</p>";
+      return;
+    }
+
+    const galleryHTML = gallery
       .map(
         (item) => `
-      <div class="col-md-4">
+      <div class="col-md-4 mb-4">
         <img src="${item.image}" alt="${item.title}" />
         <div class="gallery-overlay">
           <div class="gallery-text">${item.title}</div>
@@ -109,15 +191,82 @@ async function renderGalleryGrid() {
       )
       .join("");
 
-    document.querySelector(".js-gallery-grid").innerHTML = galleryHTML;
+    galleryGrid.innerHTML = galleryHTML; // Replace spinner with content
+    renderPaginationControls(currentPage, totalPages, "gallery");
 
-    // Trigger GSAP animation for gallery after the content is rendered
+    // Scroll to the gallery section after loading
+    scrollToSection("gallery");
+
     animateGallery();
-    ScrollTrigger.refresh(); // Refresh ScrollTrigger to include new elements
+    ScrollTrigger.refresh();
   } catch (error) {
     console.error("Error fetching gallery items:", error);
+    galleryGrid.innerHTML =
+      "<p>Error loading gallery. Please try again later.</p>";
   }
 }
+
+/* ============= PAGINATION CONTROLS ============= */
+
+// Render pagination controls dynamically
+function renderPaginationControls(currentPage, totalPages, section) {
+  const paginationContainer = document.querySelector(
+    `.${section}-pagination-container`
+  );
+
+  if (!paginationContainer) {
+    console.error(`Pagination container for section '${section}' not found.`);
+    return;
+  }
+
+  let paginationHTML = `<ul class="pagination">`;
+
+  paginationHTML +=
+    currentPage === 1
+      ? `<li class="page-item disabled"><a class="page-link">Previous</a></li>`
+      : `<li class="page-item"><a class="page-link" href="#" data-page="${
+          currentPage - 1
+        }" data-section="${section}">Previous</a></li>`;
+
+  for (let page = 1; page <= totalPages; page++) {
+    paginationHTML +=
+      page === currentPage
+        ? `<li class="page-item active"><a class="page-link">${page}</a></li>`
+        : `<li class="page-item"><a class="page-link" href="#" data-page="${page}" data-section="${section}">${page}</a></li>`;
+  }
+
+  paginationHTML +=
+    currentPage === totalPages
+      ? `<li class="page-item disabled"><a class="page-link">Next</a></li>`
+      : `<li class="page-item"><a class="page-link" href="#" data-page="${
+          currentPage + 1
+        }" data-section="${section}">Next</a></li>`;
+
+  paginationHTML += `</ul>`;
+
+  paginationContainer.innerHTML = paginationHTML;
+
+  // Add event listeners for pagination links
+  paginationContainer.querySelectorAll(".page-link").forEach((link) =>
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const page = parseInt(e.target.getAttribute("data-page"));
+      const section = e.target.getAttribute("data-section");
+
+      if (page) {
+        if (section === "services") {
+          renderServicesGrid(page);
+        } else if (section === "testimonials") {
+          renderTestimonialsGrid(page);
+        } else if (section === "gallery") {
+          renderGalleryGrid(page);
+        }
+      }
+    })
+  );
+}
+
+/* ============= SEARCH SECTION ============= */
 
 // Fetch and Render Search Results
 async function search(query) {
@@ -193,6 +342,8 @@ async function search(query) {
     console.error("Error fetching search results:", error);
   }
 }
+
+/* ============= INITIALIZE ============= */
 
 // DOMContentLoaded ensures the DOM is fully loaded before running any script
 document.addEventListener("DOMContentLoaded", () => {

@@ -337,7 +337,6 @@ footer a:hover {
 /* -------------------- Contact Section -------------------- */
 
 #contact-us {
-  font-family: var(--heading-font);
   display: flex;
   flex-direction: column;
   padding: 50px 20px;

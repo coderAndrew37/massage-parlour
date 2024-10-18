@@ -2,7 +2,7 @@ import "./animations.js";
 import "./formValidation.js";
 import "./navbarScroll.js";
 import "./localStorageHandler.js";
-import { search } from "./fetchContent.js"; // Import search function
+import { search } from "./fetchContent.js";
 
 // Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {

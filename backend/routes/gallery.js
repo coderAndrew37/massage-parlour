@@ -2,14 +2,30 @@ const express = require("express");
 const { Gallery, validateGallery } = require("../models/gallery"); // Import model and validation function
 const router = express.Router();
 
-// Public route: Fetch all gallery items
+// Helper function for pagination
+function paginate(array, page, limit) {
+  return array.slice((page - 1) * limit, page * limit);
+}
+
+// Public route: Fetch all gallery items with pagination
 router.get("/", async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // Default page is 1
+  const limit = parseInt(req.query.limit) || 6; // Default limit is 6 items per page
+
   try {
-    const galleryItems = await Gallery.find();
+    const galleryItems = await Gallery.find(); // Fetch all items
     if (!galleryItems.length) {
       return res.status(404).json({ message: "No gallery items found" });
     }
-    res.json(galleryItems);
+
+    const paginatedGallery = paginate(galleryItems, page, limit); // Paginate the results
+    const totalPages = Math.ceil(galleryItems.length / limit); // Calculate total pages
+
+    res.json({
+      gallery: paginatedGallery,
+      currentPage: page,
+      totalPages: totalPages,
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch gallery items" });
   }

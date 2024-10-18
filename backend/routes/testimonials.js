@@ -2,14 +2,30 @@ const express = require("express");
 const { Testimonial, validateTestimonial } = require("../models/testimonial"); // Import model and validation function
 const router = express.Router();
 
-// Public route: Fetch all testimonials
+// Helper function for pagination
+function paginate(array, page, limit) {
+  return array.slice((page - 1) * limit, page * limit);
+}
+
+// Public route: Fetch all testimonials with pagination
 router.get("/", async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // Default page is 1
+  const limit = parseInt(req.query.limit) || 6; // Default limit is 6 testimonials per page
+
   try {
-    const testimonials = await Testimonial.find();
+    const testimonials = await Testimonial.find(); // Fetch all items
     if (!testimonials.length) {
       return res.status(404).json({ message: "No testimonials found" });
     }
-    res.json(testimonials);
+
+    const paginatedTestimonials = paginate(testimonials, page, limit); // Paginate the results
+    const totalPages = Math.ceil(testimonials.length / limit); // Calculate total pages
+
+    res.json({
+      testimonials: paginatedTestimonials,
+      currentPage: page,
+      totalPages: totalPages,
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch testimonials" });
   }
