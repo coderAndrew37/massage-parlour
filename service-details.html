@@ -56,25 +56,26 @@
 
     <!-- Service Information Section -->
     <section class="container mt-5">
-      <div class="row">
-        <!-- Left Column: Service Image and Additional Images -->
-        <div class="col-md-6">
+      <div id="service-content">
+        <!-- Left Column: Service Image -->
+        <div class="left-column">
           <img
             id="service-image"
             src=""
             alt="Service Image"
-            class="img-fluid mb-4 w-full"
+            class="img-fluid mb-4"
           />
-          <div class="row" id="additional-images">
-            <!-- Additional images will be dynamically injected here -->
-          </div>
         </div>
 
         <!-- Right Column: Service Information and Benefits -->
-        <div class="col-md-6">
+        <div class="right-column">
           <h1 id="service-title" class="display-4"></h1>
           <p id="service-description" class="lead"></p>
-          <p><strong>Price:</strong> $<span id="service-price"></span></p>
+
+          <div id="service-price-container">
+            <span class="price-label">Price:</span>
+            <span id="service-price"></span>
+          </div>
 
           <h3>Benefits</h3>
           <ul id="service-benefits" class="list-unstyled">
@@ -83,8 +84,27 @@
 
           <!-- Book Now Button -->
           <a href="https://wa.me/254741497537" target="_blank">
-            <button class="btn btn-primary btn-lg">Book Now</button>
+            <button class="book-now-button">Book Now</button>
           </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Additional Images Section -->
+    <section class="container text-center mt-5">
+      <h3 id="additional-images-heading">Explore More Photos</h3>
+      <!-- Add heading -->
+      <div class="row" id="additional-images">
+        <!-- Dynamically injected images will go here -->
+        <!-- Example static layout to show structure -->
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+          <img src="images/photo1.jpg" class="img-fluid" alt="Image 1" />
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+          <img src="images/photo2.jpg" class="img-fluid" alt="Image 2" />
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+          <img src="images/photo3.jpg" class="img-fluid" alt="Image 3" />
         </div>
       </div>
     </section>

@@ -57,7 +57,7 @@ footer a:hover {
 .hero-section {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100vh; /* Default height for large screens */
   background-image: url("../images/hero_1.jpg");
   background-size: cover;
   background-position: center;
@@ -116,19 +116,26 @@ footer a:hover {
   transform: scale(1.05);
 }
 
-/* Hero section responsiveness */
+/* -------------------- Adjustments for small screens -------------------- */
+
 @media (max-width: 768px) {
+  .hero-section {
+    height: 60vh; /* Reduce height for small screens */
+    padding-top: 50px;
+  }
+
   .hero-text h1 {
-    font-size: 2.5rem;
+    font-size: 2.5rem; /* Scale down text size */
   }
 
   .hero-text p {
-    font-size: 1rem;
+    font-size: 1rem; /* Scale down paragraph size */
+    margin-bottom: 20px;
   }
 
   .cta-button {
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 10px 20px; /* Adjust button padding */
+    font-size: 1rem; /* Reduce font size for the button */
   }
 }
 

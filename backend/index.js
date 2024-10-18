@@ -6,6 +6,8 @@ const app = express();
 const winston = require("winston");
 const cors = require("cors");
 const cookieParser = require("cookie-parser"); // For parsing cookies
+const path = require("path");
+
 require("express-async-errors");
 
 app.use(
@@ -14,6 +16,9 @@ app.use(
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   })
 );
+
+// Serve static files from 'images' directory (for both images and videos)
+app.use("/images", express.static(path.join(__dirname, "..", "images")));
 
 app.use(express.json()); // Parse JSON bodies
 app.use(cookieParser()); // Parse cookies for token handling

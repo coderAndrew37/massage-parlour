@@ -1,26 +1,88 @@
-/* Additional styling for images and benefits */
+/* Adjust layout for service image and details */
+#service-content {
+  display: flex;
+  flex-wrap: wrap; /* Ensures flexibility on small screens */
+  gap: 30px;
+}
+
+#service-content .left-column {
+  flex: 1;
+  max-width: 50%; /* Limit width to 50% for large screens */
+}
+
+#service-content .right-column {
+  flex: 1;
+  max-width: 50%;
+}
+
+@media (max-width: 768px) {
+  /* Stack service content on small screens */
+  #service-content {
+    flex-direction: column; /* Stack items vertically */
+  }
+  #service-content .left-column,
+  #service-content .right-column {
+    max-width: 100%; /* Full width for mobile screens */
+  }
+
+  #service-image {
+    width: 100%; /* Full width */
+    max-width: 600px; /* Set a maximum width to prevent it from being too large */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensure the image fills the container */
+    border-radius: 8px; /* Optional: add rounded corners */
+    margin-bottom: 20px; /* Add space below the image */
+  }
+
+  /* Move service description below the image on small screens */
+  .right-column {
+    order: 2;
+  }
+
+  .left-column {
+    order: 1;
+  }
+}
+
+/* Remove space between navbar and service image/description */
+.navbar-custom {
+  margin-bottom: 0;
+}
+
+#service-content {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* Style for Additional Images Section */
+#additional-images-heading {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
 #additional-images {
-  margin-top: 20px;
-  text-align: center;
+  margin-top: 30px;
 }
 
 #additional-images img {
-  max-width: 100%;
-  height: 250px; /* Set uniform height */
-  object-fit: cover; /* Maintain aspect ratio */
+  border-radius: 8px;
+  object-fit: cover;
+  width: 100%; /* Ensures the image fills the column */
+  height: 250px; /* Uniform height for images */
 }
 
-/* Responsive layout for additional images */
-#additional-images .col-lg-4,
-#additional-images .col-md-6,
-#additional-images .col-sm-12 {
-  padding: 5px;
+/* Make sure images stack on smaller screens */
+@media (max-width: 576px) {
+  #additional-images img {
+    height: 200px; /* Reduce height for very small screens */
+  }
 }
 
 /* Benefits styling */
 #service-benefits li {
   margin-bottom: 15px;
-  font-size: 1.5rem;
+  font-size: 1.2rem; /* Reduced font size for better layout sync */
 }
 
 .benefit-text {
@@ -28,18 +90,55 @@
 }
 
 #service-benefits i {
-  color: red; /* Change icon color to red */
+  color: red;
+  font-size: 1.5rem; /* Reduce icon size */
 }
 
 /* Styled Price */
+#service-price-container {
+  margin-top: 20px;
+}
+
 #service-price {
-  font-size: 2rem;
-  color: #28a745; /* Green for price */
+  font-size: 2.5rem;
+  color: #28a745;
   font-weight: bold;
+}
+
+.price-label {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Book Now button */
+.book-now-button {
+  margin-top: 20px;
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  border-radius: 50px;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.book-now-button:hover {
+  background-color: var(--secondary-color);
 }
 
 /* Video section styling */
 #service-video {
-  width: 100%;
-  height: auto;
+  width: 100%; /* Full width */
+  max-height: 500px; /* Set a maximum height */
+  height: auto; /* Maintain aspect ratio */
+  margin-top: 40px; /* Space above the video */
+  object-fit: cover; /* Ensures the video fills the container while maintaining the aspect ratio */
+  border-radius: 8px; /* Optional: Add rounded corners for consistency with other elements */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  #service-video {
+    max-height: 300px; /* Reduce height for smaller screens */
+  }
 }
