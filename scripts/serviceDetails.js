@@ -11,8 +11,6 @@ import {
 const urlParams = new URLSearchParams(window.location.search);
 const slug = urlParams.get("slug");
 
-console.log("Extracted slug:", slug);
-
 // If slug is missing, show an error message
 if (!slug) {
   console.error("No slug found in URL");

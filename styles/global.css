@@ -1,0 +1,75 @@
+/* -------------------- Global Styles -------------------- */
+
+/* Define variables for colors, fonts, and spacing */
+:root {
+  --primary-color: #e63946;
+  --secondary-color: #ff6b6b;
+  --bg-color: #f7f7f7;
+  --text-color: #333;
+  --heading-font: "Montserrat", sans-serif;
+  --body-font: "Arial", sans-serif;
+
+  --spacing-small: 10px;
+  --spacing-medium: 20px;
+  --spacing-large: 40px;
+
+  --font-size-small: 1rem;
+  --font-size-medium: 1.2rem;
+  --font-size-large: 2.5rem;
+  --font-size-heading: 3rem;
+}
+
+/* General body background and font */
+body {
+  background-color: var(--bg-color);
+  font-family: var(--body-font);
+}
+
+/* Navbar */
+.navbar-custom {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #333;
+  padding: var(--spacing-small);
+  width: 100%;
+}
+
+.navbar-custom .navbar-nav .nav-link {
+  color: white;
+}
+
+.navbar-custom .navbar-nav .nav-link:hover {
+  color: var(--secondary-color);
+}
+
+.fas,
+.fab {
+  color: var(--primary-color);
+}
+
+/* Button styles */
+.cta-button,
+.book-now-button {
+  padding: var(--spacing-small) var(--spacing-medium);
+  font-size: var(--font-size-medium);
+  border-radius: 50px;
+  border: none;
+  background-color: var(--secondary-color);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, transform 0.3s;
+}
+
+.cta-button:hover,
+.book-now-button:hover {
+  background-color: var(--primary-color);
+  transform: scale(1.05);
+}
+
+/* Section headings */
+h2 {
+  font-size: var(--font-size-heading);
+  margin-bottom: var(--spacing-medium);
+  font-weight: 600;
+}

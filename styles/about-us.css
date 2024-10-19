@@ -1,0 +1,77 @@
+/* -------------------- About Us Section -------------------- */
+
+#about-us {
+  background-color: var(
+    --bg-color
+  ); /* Already defined in global, but reiterated for clarity */
+  padding: var(--spacing-large) 0; /* Unique padding for this section */
+  font-family: var(
+    --heading-font
+  ); /* Already defined globally, kept here for section isolation */
+}
+
+#about-us h2 {
+  margin-bottom: 30px; /* Custom margin for the section */
+}
+
+#about-us p {
+  font-size: var(--font-size-medium); /* Use global variable for font size */
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+
+/* Lottie Animation Container */
+.lottie-container {
+  width: 100%;
+  height: 300px;
+  margin: var(--spacing-medium) 0;
+}
+
+/* Our Team Section */
+.our-team {
+  padding: 60px 0;
+}
+
+.our-team h2 {
+  margin-bottom: 40px;
+}
+
+/* Card Styles */
+.card {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out; /* Add hover effect */
+}
+
+.card:hover {
+  transform: scale(1.05); /* Scale on hover */
+}
+
+.card-img-top {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  height: 250px;
+  object-fit: cover;
+}
+
+/* Card Body Text */
+.card-body h5 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.card-body p {
+  font-size: var(--font-size-small);
+  color: #666;
+}
+
+/* Location Section */
+.location {
+  background-color: #ffffff;
+  padding: var(--spacing-large) 0;
+}
+
+.location h2 {
+  font-size: 2.5rem; /* Custom font size for the location section */
+  margin-bottom: var(--spacing-large);
+}
