@@ -23,6 +23,9 @@
 body {
   background-color: var(--bg-color);
   font-family: var(--body-font);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 /* Navbar */
@@ -72,4 +75,39 @@ h2 {
   font-size: var(--font-size-heading);
   margin-bottom: var(--spacing-medium);
   font-weight: 600;
+}
+
+/* -------------------- Testimonial Section (Shared) -------------------- */
+
+.testimonial-box {
+  position: relative;
+  padding: 20px;
+  padding-left: 70px;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(5, 5, 5, 0.4);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.testimonial-box img {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.testimonial-box:hover {
+  transform: translateY(-10px) translateX(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .testimonial-box {
+    margin-bottom: 20px;
+  }
 }

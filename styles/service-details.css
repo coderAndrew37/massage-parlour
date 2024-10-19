@@ -18,18 +18,51 @@
     flex-direction: column;
   }
 
-  #service-content .left-column,
+  #service-content,
   #service-content .right-column {
     max-width: 100%; /* Full width for mobile screens */
   }
 
+  /* Centering the image on larger screens */
+  .left-column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Ensure it takes full width of the column */
+  }
+
   #service-image {
-    width: 100%;
-    max-width: 600px; /* Set a maximum width to prevent the image from being too large */
-    height: auto; /* Maintain aspect ratio */
-    object-fit: cover; /* Ensure the image fills the container */
-    border-radius: 8px; /* Optional: add rounded corners */
-    margin-bottom: 20px; /* Add space below the image */
+    width: 100%; /* Full width */
+    max-width: 600px; /* Limit width on larger screens */
+    height: auto;
+    object-fit: cover; /* Ensure the image covers the container */
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  /* On small screens, make the image occupy the full width of the row */
+  @media (max-width: 768px) {
+    #service-content {
+      flex-direction: column; /* Stack the columns */
+    }
+
+    .left-column {
+      max-width: 100%; /* Ensure it takes full width of the container */
+      display: block; /* No need for flexbox here */
+      margin-bottom: 20px;
+    }
+
+    #service-image {
+      max-width: 100%; /* Occupy the entire width of the row */
+      height: auto;
+    }
+  }
+
+  @media (max-width: 576px) {
+    #service-image {
+      max-width: 100%;
+      height: auto; /* Let the height adjust naturally */
+    }
   }
 
   /* Move service description below the image on small screens */
