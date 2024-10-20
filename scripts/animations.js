@@ -51,7 +51,7 @@ gsap.from("#faqAccordion .accordion-item", {
 // animations.js
 
 // GSAP Animation for Hero Section
-function animateHero() {
+export function animateHero() {
   gsap.from(".hero-text h1", {
     duration: 1.2,
     y: -50,

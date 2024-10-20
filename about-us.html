@@ -61,9 +61,36 @@
               <a class="nav-link" href="index.html">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="#">About Us</a>
+              <a class="nav-link active" aria-current="page" href="#about-us"
+                >About Us</a
+              >
+              <!-- About Us active -->
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#client-journey">Our Journey</a>
+              <!-- Link to Our Journey section -->
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#our-team">Our Team</a>
+              <!-- Link to Team section -->
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact-us">Contact</a>
+              <!-- Link to Contact Us section -->
             </li>
           </ul>
+          <form class="d-flex" id="searchForm">
+            <input
+              class="form-control me-2"
+              type="search"
+              id="searchQuery"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-success" type="submit">
+              Search
+            </button>
+          </form>
         </div>
       </div>
     </nav>

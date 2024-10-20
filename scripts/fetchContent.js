@@ -61,8 +61,8 @@ async function renderServicesGrid(page = 1) {
   const servicesGrid = document.querySelector(".js-services-grid");
 
   try {
-    servicesGrid.innerHTML = ""; // Clear previous content
-    servicesGrid.appendChild(spinner); // Show loading spinner
+    // Clear skeletons and prepare to show actual data
+    servicesGrid.innerHTML = ""; // Clear the skeletons
 
     const { services, currentPage, totalPages } = await fetchWithRetry(
       `${baseURL}/api/services?page=${page}&limit=${limit}`
@@ -90,7 +90,7 @@ async function renderServicesGrid(page = 1) {
       )
       .join("");
 
-    servicesGrid.innerHTML = servicesHTML; // Replace spinner with content
+    servicesGrid.innerHTML = servicesHTML; // Replace skeletons with actual content
     renderPaginationControls(currentPage, totalPages, "services");
 
     // Scroll to the services section after loading
@@ -113,8 +113,7 @@ async function renderTestimonialsGrid(page = 1) {
   const testimonialsGrid = document.querySelector(".js-testimonials-grid");
 
   try {
-    testimonialsGrid.innerHTML = ""; // Clear previous content
-    testimonialsGrid.appendChild(spinner); // Show loading spinner
+    testimonialsGrid.innerHTML = ""; // Clear the skeletons
 
     const { testimonials, currentPage, totalPages } = await fetchWithRetry(
       `${baseURL}/api/testimonials?page=${page}&limit=${limit}`
@@ -142,7 +141,7 @@ async function renderTestimonialsGrid(page = 1) {
       )
       .join("");
 
-    testimonialsGrid.innerHTML = testimonialsHTML; // Replace spinner with content
+    testimonialsGrid.innerHTML = testimonialsHTML; // Replace skeletons with actual content
     renderPaginationControls(currentPage, totalPages, "testimonials");
 
     // Scroll to the testimonials section after loading
@@ -165,8 +164,7 @@ async function renderGalleryGrid(page = 1) {
   const galleryGrid = document.querySelector(".js-gallery-grid");
 
   try {
-    galleryGrid.innerHTML = ""; // Clear previous content
-    galleryGrid.appendChild(spinner); // Show loading spinner
+    galleryGrid.innerHTML = ""; // Clear the skeletons
 
     const { gallery, currentPage, totalPages } = await fetchWithRetry(
       `${baseURL}/api/gallery?page=${page}&limit=${limit}`
@@ -191,7 +189,7 @@ async function renderGalleryGrid(page = 1) {
       )
       .join("");
 
-    galleryGrid.innerHTML = galleryHTML; // Replace spinner with content
+    galleryGrid.innerHTML = galleryHTML; // Replace skeletons with actual content
     renderPaginationControls(currentPage, totalPages, "gallery");
 
     // Scroll to the gallery section after loading
@@ -273,6 +271,28 @@ async function search(query) {
   try {
     const results = await fetchWithRetry(`${baseURL}/api/search?q=${query}`);
 
+    // Clear previous search results
+    const servicesGrid = document.querySelector(".js-services-grid");
+    const testimonialsGrid = document.querySelector(".js-testimonials-grid");
+    const galleryGrid = document.querySelector(".js-gallery-grid");
+
+    servicesGrid.innerHTML = "";
+    testimonialsGrid.innerHTML = "";
+    galleryGrid.innerHTML = "";
+
+    // Handle "No results found" scenario
+    if (
+      !results.services.length &&
+      !results.testimonials.length &&
+      !results.gallery.length
+    ) {
+      servicesGrid.innerHTML = "<p>No results found for your query.</p>";
+      testimonialsGrid.innerHTML =
+        "<p>No testimonials found for your query.</p>";
+      galleryGrid.innerHTML = "<p>No gallery items found for your query.</p>";
+      return;
+    }
+
     // Render Services
     if (results.services.length) {
       const servicesHTML = results.services
@@ -284,14 +304,14 @@ async function search(query) {
             <div class="card-body">
               <h5 class="card-title">${service.title}</h5>
               <p class="card-text">${service.description}</p>
-              <a href="https://wa.me/254746577838" class="btn btn-primary">Book Now</a>
+              <a href="service-details.html?slug=${service.slug}" class="btn btn-primary">Learn More</a>
             </div>
           </div>
         </div>
       `
         )
         .join("");
-      document.querySelector(".js-services-grid").innerHTML = servicesHTML;
+      servicesGrid.innerHTML = servicesHTML;
       animateServices();
     }
 
@@ -312,8 +332,7 @@ async function search(query) {
       `
         )
         .join("");
-      document.querySelector(".js-testimonials-grid").innerHTML =
-        testimonialsHTML;
+      testimonialsGrid.innerHTML = testimonialsHTML;
       animateTestimonials();
     }
 
@@ -332,7 +351,7 @@ async function search(query) {
       `
         )
         .join("");
-      document.querySelector(".js-gallery-grid").innerHTML = galleryHTML;
+      galleryGrid.innerHTML = galleryHTML;
       animateGallery();
     }
 
@@ -340,6 +359,10 @@ async function search(query) {
     ScrollTrigger.refresh();
   } catch (error) {
     console.error("Error fetching search results:", error);
+    // Optionally show error message in UI
+    const servicesGrid = document.querySelector(".js-services-grid");
+    servicesGrid.innerHTML =
+      "<p>There was an error fetching the search results. Please try again later.</p>";
   }
 }
 

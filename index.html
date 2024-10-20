@@ -33,7 +33,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-custom">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="index.html">
           <img
             src="images/hero_1.jpg"
             alt="Equator Spa"
@@ -57,35 +57,24 @@
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#hero"
-                >Home</a
-              >
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+              <!-- Home active -->
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#why-choose-us">Why Choose Us</a>
+              <a class="nav-link" href="about-us.html">About Us</a>
+              <!-- Link to About Us section -->
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#services">Services</a>
+              <!-- Link to Services section -->
             </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Other Pages
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="about-us.html">About Us</a>
-                </li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </li>
-              </ul>
+            <li class="nav-item">
+              <a class="nav-link" href="#gallery">Gallery</a>
+              <!-- Link to Gallery section -->
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact-us">Contact</a>
+              <!-- Link to Contact Us section -->
             </li>
           </ul>
           <form class="d-flex" id="searchForm">
@@ -146,6 +135,109 @@
               We use only natural and eco-friendly products in our treatments.
             </p>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" class="py-5 text-center">
+      <div class="container">
+        <h2>Take Our Wellness Quiz</h2>
+        <p>Find out what spa treatment is best for you!</p>
+
+        <form
+          id="quizForm"
+          class="row g-3 quiz-form needs-validation"
+          novalidate
+        >
+          <!-- Questions -->
+          <div class="col-md-4">
+            <label for="q1" class="form-label"
+              >What is your main wellness goal?</label
+            >
+            <select id="q1" name="q1" class="form-select" required>
+              <option value="" disabled selected>Select one...</option>
+              <option value="relaxation">Relaxation</option>
+              <option value="detox">Detox</option>
+              <option value="rejuvenation">Rejuvenation</option>
+              <option value="pain-relief">Pain Relief</option>
+            </select>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please select a wellness goal.</div>
+          </div>
+
+          <div class="col-md-4">
+            <label for="q2" class="form-label"
+              >How often do you visit a spa?</label
+            >
+            <select id="q2" name="q2" class="form-select" required>
+              <option value="" disabled selected>Select one...</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="occasionally">Occasionally</option>
+              <option value="never">Never</option>
+            </select>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">
+              Please select how often you visit a spa.
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label for="q3" class="form-label"
+              >What kind of environment do you prefer?</label
+            >
+            <select id="q3" name="q3" class="form-select" required>
+              <option value="" disabled selected>Select one...</option>
+              <option value="calm">Calm and quiet</option>
+              <option value="social">Social and vibrant</option>
+              <option value="luxurious">Luxurious and high-end</option>
+            </select>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">
+              Please select an environment preference.
+            </div>
+          </div>
+
+          <!-- Email Capture -->
+          <div class="col-md-6">
+            <label for="email" class="form-label"
+              >Enter your email to see your personalized results:</label
+            >
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-control"
+              placeholder="Your Email"
+              required
+            />
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">
+              Please provide a valid email address.
+            </div>
+          </div>
+
+          <!-- Error Display (for submission errors) -->
+          <div class="col-12">
+            <div
+              id="submissionError"
+              class="alert alert-danger"
+              style="display: none"
+            ></div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary mt-3">
+              See Results
+            </button>
+          </div>
+        </form>
+
+        <!-- Placeholder for results -->
+        <div id="quizResults" class="mt-4" style="display: none">
+          <h3>Your Recommended Spa Treatment:</h3>
+          <p id="resultText"></p>
         </div>
       </div>
     </section>

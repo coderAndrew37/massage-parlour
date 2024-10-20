@@ -7,7 +7,7 @@ export function animateServiceDetails() {
   if (mediaQueryLarge.matches) {
     gsap.from("#service-image", {
       duration: 0.8,
-      x: -80,
+      x: 80, // Move the image in from the right
       ease: "power1.out",
       scrollTrigger: {
         trigger: "#service-content",
@@ -30,7 +30,7 @@ export function animateServiceDetails() {
   if (mediaQuerySmall.matches) {
     gsap.from("#service-image", {
       duration: 0.5,
-      x: 0,
+      x: 0, // Keep movement neutral for smaller screens
       ease: "power1.out",
       scrollTrigger: {
         trigger: "#service-content",

@@ -5,6 +5,7 @@ const gallery = require("../routes/gallery");
 const search = require("../routes/search");
 const upload = require("../routes/upload");
 const team = require("../routes/teamMembers");
+const quiz = require("../routes/quiz");
 
 module.exports = function (app) {
   app.use(express.json());
@@ -14,4 +15,5 @@ module.exports = function (app) {
   app.use("/api/search", search);
   app.use("/api/upload", upload); // Add upload route here
   app.use("/api/team", team); // Add team route here
+  app.use("/api/quiz", quiz); // Add quiz route here
 };
