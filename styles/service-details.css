@@ -47,9 +47,14 @@
     }
 
     .left-column {
-      max-width: 100%; /* Ensure it takes full width of the container */
+      width: 100%; /* Ensure it takes full width of the container */
       display: block; /* No need for flexbox here */
       margin-bottom: 20px;
+    }
+
+    .left-column img {
+      width: 100%; /* Full width */
+      height: 300px; /* Let the height adjust naturally */
     }
 
     #service-image {

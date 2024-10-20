@@ -49,6 +49,37 @@ if (!slug) {
         skeleton.style.display = "none";
       });
 
+      // Render service benefits with icons
+      const benefitsList = document.getElementById("service-benefits");
+      if (service.benefits && service.benefits.length > 0) {
+        // Clear any existing content
+        benefitsList.innerHTML = "";
+
+        // Create and inject list items with icons for each benefit
+        service.benefits.forEach((benefit) => {
+          const listItem = document.createElement("li");
+
+          // Create icon element
+          const iconElement = document.createElement("i");
+          iconElement.className = benefit.icon; // Use the icon class from the benefit object
+          iconElement.style.marginRight = "10px"; // Add some space between icon and text
+
+          // Add the icon and description
+          listItem.appendChild(iconElement);
+          listItem.appendChild(document.createTextNode(benefit.description));
+
+          benefitsList.appendChild(listItem);
+        });
+
+        // Show the benefits section
+        benefitsList.style.display = "block";
+        document.querySelector("h3").style.display = "block"; // Display the "Benefits" header
+      } else {
+        // Hide the benefits section if no benefits are available
+        benefitsList.style.display = "none";
+        document.querySelector("h3").style.display = "none"; // Hide the "Benefits" header
+      }
+
       // Handle additional images
       const additionalImagesContainer =
         document.getElementById("additional-images");
@@ -122,7 +153,6 @@ if (!slug) {
 
   document.addEventListener("DOMContentLoaded", renderServiceDetails);
 
-  // Fetch and render related services with error handling
   async function renderRelatedServices(relatedServiceIds) {
     if (!relatedServiceIds || relatedServiceIds.length === 0) {
       console.warn("No related services found.");
@@ -132,35 +162,41 @@ if (!slug) {
     }
 
     try {
+      // Map through relatedServiceIds and ensure only the ID (_id) is passed
       const relatedServices = await Promise.all(
-        relatedServiceIds.map((id) =>
-          fetch(`${baseURL}/api/services/${id}`).then((res) => res.json())
-        )
+        relatedServiceIds.map(async (idObj) => {
+          const id = typeof idObj === "object" ? idObj._id : idObj; // Ensure we get the correct _id
+          const response = await fetch(`${baseURL}/api/services/${id}`);
+          if (!response.ok) {
+            throw new Error(`Service with ID ${id} not found`);
+          }
+          return response.json();
+        })
       );
 
+      // Generate the HTML for related services
       const relatedServicesHTML = relatedServices
-        .map(
-          (service) => `
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <img src="${
-              service.image || "images/placeholder.jpg"
-            }" class="card-img-top" alt="${service.title}" loading="lazy" />
-            <div class="card-body">
-              <h5 class="card-title">${service.title}</h5>
-              <p class="card-text">${
-                service.description || "No description available."
-              }</p>
-              <a href="/service-details.html?slug=${
-                service.slug
-              }" class="btn btn-primary">Learn More</a>
+        .map((service) => {
+          const serviceImage = service.image || "images/placeholder.jpg"; // Fallback to placeholder image
+          const serviceDescription =
+            service.description || "No description available.";
+
+          return `
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <img src="${serviceImage}" class="card-img-top" alt="${service.title}" loading="lazy" />
+              <div class="card-body">
+                <h5 class="card-title">${service.title}</h5>
+                <p class="card-text">${serviceDescription}</p>
+                <a href="/service-details.html?slug=${service.slug}" class="btn btn-primary">Learn More</a>
+              </div>
             </div>
           </div>
-        </div>
-      `
-        )
+        `;
+        })
         .join("");
 
+      // Insert the generated HTML into the grid
       document.querySelector(".js-related-services-grid").innerHTML =
         relatedServicesHTML;
 

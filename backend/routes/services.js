@@ -1,9 +1,10 @@
 const express = require("express");
 const { Service, validateService } = require("../models/service"); // Import model and validation function
+const mongoose = require("mongoose"); // Import mongoose to convert IDs to ObjectId
+const slugify = require("slugify");
 const router = express.Router();
 
 // Helper function to generate unique slugs
-
 async function generateUniqueSlug(title) {
   const slug = slugify(title, { lower: true });
   const existingService = await Service.findOne({ slug });
@@ -14,8 +15,6 @@ async function generateUniqueSlug(title) {
 
   return slug;
 }
-// Helper function to slugify a string
-const slugify = require("slugify");
 
 // Helper function for pagination
 function paginate(array, page, limit) {
@@ -42,20 +41,38 @@ router.get("/", async (req, res) => {
       totalPages: totalPages,
     });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch services" });
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Failed to fetch services", details: error.message });
   }
 });
 
-// Fetch a single service by slug
-router.get("/:slug", async (req, res) => {
+// **UPDATED ROUTE** to fetch a service by either slug or ID
+router.get("/:slugOrId", async (req, res) => {
+  const { slugOrId } = req.params;
+  let service;
+
   try {
-    const service = await Service.findOne({ slug: req.params.slug });
+    // Check if the parameter is a valid ObjectId
+    if (mongoose.Types.ObjectId.isValid(slugOrId)) {
+      service = await Service.findById(slugOrId).populate("relatedServiceIds");
+    } else {
+      service = await Service.findOne({ slug: slugOrId }).populate(
+        "relatedServiceIds"
+      );
+    }
+
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
     }
+
     res.json(service);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch service" });
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Failed to fetch service", details: error.message });
   }
 });
 
@@ -75,6 +92,9 @@ router.post("/", async (req, res) => {
     additionalImages: req.body.additionalImages, // Add additional images
     videoUrl: req.body.videoUrl, // Add video URL if provided
     benefits: req.body.benefits, // Add benefits if provided
+    relatedServiceIds: req.body.relatedServiceIds.map((id) =>
+      mongoose.Types.ObjectId(id)
+    ), // Convert relatedServiceIds to ObjectId
   });
 
   try {
@@ -82,7 +102,10 @@ router.post("/", async (req, res) => {
     await service.save();
     res.status(201).json(service);
   } catch (error) {
-    res.status(500).json({ error: "Failed to add service" });
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Failed to add service", details: error.message });
   }
 });
 
@@ -94,11 +117,14 @@ router.put("/:id", async (req, res) => {
   try {
     const service = await Service.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-    });
+    }).populate("relatedServiceIds");
     if (!service) return res.status(404).json({ error: "Service not found" });
     res.json(service);
   } catch (error) {
-    res.status(500).json({ error: "Failed to update service" });
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Failed to update service", details: error.message });
   }
 });
 
@@ -109,7 +135,10 @@ router.delete("/:id", async (req, res) => {
     if (!service) return res.status(404).json({ error: "Service not found" });
     res.json(service);
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete service" });
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Failed to delete service", details: error.message });
   }
 });
 
