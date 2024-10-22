@@ -1,17 +1,23 @@
+// file: contactFormValidation.js
 const baseURL = "http://localhost:5500";
 
 // Custom Bootstrap validation for the Contact form
 (function () {
   "use strict";
   const contactForm = document.querySelector(".contact-form .needs-validation");
+  const submitButton = document.querySelector(
+    ".contact-form button[type='submit']"
+  );
 
   contactForm.addEventListener("submit", async function (event) {
     event.preventDefault(); // Prevent form reload
     event.stopPropagation();
 
-    // Check if the form is valid
     if (contactForm.checkValidity()) {
-      // Form is valid, proceed to submit
+      // Form is valid, show loading state and proceed to submit
+      submitButton.disabled = true;
+      submitButton.innerHTML = "Sending..."; // Change button text to loading
+
       await handleContactFormSubmission();
     } else {
       // Form is invalid, show validation errors
@@ -24,7 +30,6 @@ const baseURL = "http://localhost:5500";
 async function handleContactFormSubmission() {
   const contactForm = document.querySelector(".contact-form .needs-validation");
 
-  // Collect form data
   const formData = new FormData(contactForm);
   const requestData = {
     name: formData.get("name"),
@@ -33,7 +38,6 @@ async function handleContactFormSubmission() {
   };
 
   try {
-    // Send form data to the server (API) using fetch
     const response = await fetch(`${baseURL}/api/contact`, {
       method: "POST",
       headers: {
@@ -45,16 +49,19 @@ async function handleContactFormSubmission() {
     const result = await response.json();
 
     if (response.ok) {
-      // If the submission was successful, show a success message
       alert("Message sent successfully!");
-      contactForm.reset(); // Clear the form
+      contactForm.reset();
       contactForm.classList.remove("was-validated");
     } else {
-      // Show error if submission failed
       alert(result.error || "Failed to send the message.");
     }
   } catch (error) {
-    // Handle network errors
     alert("An error occurred while sending the message.");
+  } finally {
+    const submitButton = document.querySelector(
+      ".contact-form button[type='submit']"
+    );
+    submitButton.disabled = false;
+    submitButton.innerHTML = "Submit"; // Restore button text after submission
   }
 }

@@ -1,48 +1,53 @@
 const express = require("express");
 const { Lead, validateLead } = require("../models/lead");
 const nodemailer = require("nodemailer");
+const axios = require("axios");
+const rateLimit = require("express-rate-limit");
+const xss = require("xss");
+const moment = require("moment");
 const router = express.Router();
 
-// Helper function to determine the recommended treatment based on answers
-function getRecommendedTreatment(answers) {
-  const { q1, q2, q3 } = answers;
-  let recommendation = "";
+// ZeroBounce API key (Replace with your actual API key)
+const ZEROBOUNCE_API_KEY = process.env.ZEROBOUNCE_API_KEY;
 
-  if (q1 === "relaxation") {
-    recommendation +=
-      "We recommend our full-body relaxation massage to help you unwind.\n";
-  } else if (q1 === "detox") {
-    recommendation +=
-      "Our detoxifying treatments will help cleanse your body and mind.\n";
-  } else if (q1 === "rejuvenation") {
-    recommendation += "Rejuvenate with our anti-aging facial treatments!\n";
-  } else if (q1 === "pain-relief") {
-    recommendation += "For pain relief, we suggest our deep tissue massage.\n";
+// Helper function to check daily submission limit (2 per day)
+async function checkDailySubmissionLimit(email) {
+  const startOfDay = moment().startOf("day").toDate();
+  const submissionsToday = await Lead.countDocuments({
+    email: email,
+    createdAt: { $gte: startOfDay },
+  });
+
+  return submissionsToday >= 2;
+}
+
+// Helper function to verify email using ZeroBounce
+async function verifyEmailWithZeroBounce(email) {
+  const url = `https://api.zerobounce.net/v2/validate?api_key=${ZEROBOUNCE_API_KEY}&email=${email}`;
+  try {
+    const response = await axios.get(url);
+    const { status } = response.data;
+
+    // Only allow "valid" emails through
+    return status === "valid";
+  } catch (error) {
+    console.error("Error calling ZeroBounce API:", error);
+    throw new Error("Email verification failed.");
   }
+}
 
-  if (q2 === "weekly") {
-    recommendation +=
-      "Since you visit spas weekly, we'd recommend setting up a personalized wellness routine.\n";
-  } else if (q2 === "monthly") {
-    recommendation +=
-      "A monthly visit to our spa will ensure you maintain a consistent level of relaxation.\n";
-  } else if (q2 === "occasionally") {
-    recommendation +=
-      "We'd love to welcome you more often! Why not take advantage of our loyalty program?\n";
+// Helper function to generate a verification token
+function generateVerificationToken(email) {
+  return Buffer.from(email).toString("base64");
+}
+
+// Helper function to verify token
+function verifyToken(token) {
+  try {
+    return Buffer.from(token, "base64").toString("ascii");
+  } catch (error) {
+    return null;
   }
-
-  if (q3 === "calm") {
-    recommendation +=
-      "Our spa offers a calm and quiet environment, perfect for complete relaxation.\n";
-  } else if (q3 === "social") {
-    recommendation +=
-      "If you prefer a more social environment, we recommend booking during our group sessions.\n";
-  } else if (q3 === "luxurious") {
-    recommendation +=
-      "We offer luxurious high-end treatments that you'll love!\n";
-  }
-
-  return recommendation;
 }
 
 // Nodemailer transporter setup
@@ -56,68 +61,101 @@ const transporter = nodemailer.createTransport({
 
 // POST route to handle quiz submissions
 router.post("/", async (req, res) => {
-  // Validate the incoming data
   const { error } = validateLead(req.body);
-  if (error) {
-    console.error("Validation error:", error.details[0].message);
-    return res.status(400).json({ error: error.details[0].message });
-  }
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
   const { email, quizAnswers } = req.body;
 
   try {
-    // Create a new lead entry
-    const lead = new Lead({
-      email: email,
-      quizAnswers: quizAnswers,
-    });
-
-    // Save the lead to the database
-    await lead.save();
-    console.log("Quiz submission saved to database for email:", email);
-
-    // Get the personalized recommendation based on the quiz answers
-    const recommendation = getRecommendedTreatment(quizAnswers);
-
-    // Send the recommendation to the user's email
-    const mailOptions = {
-      from: process.env.EMAI_USER, // Your email address as the sender
-      to: email, // Send email to the user
-      subject: "Your Personalized Recommendation - Equator Spa",
-      html: `
-        <h2>Your Personalized Spa Treatment Recommendation</h2>
-        <p>Thank you for taking our wellness quiz. Based on your answers, here is our recommendation:</p>
-        <h3>Recommended Treatment:</h3>
-        <p>${recommendation}</p>
-        <br/>
-        <p>We hope to see you soon at Equator Spa!</p>
-      `,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email via Nodemailer:", error);
-        return res
-          .status(500)
-          .json({ error: "Failed to send quiz results via email" });
-      } else {
-        console.log("Email sent successfully: " + info.response);
-      }
-    });
-
-    // Respond with the recommendation
-    res.status(201).json({ recommendation });
-  } catch (error) {
-    // Handle MongoDB duplicate email error gracefully
-    if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
-      console.error("Duplicate email submission error:", error.keyValue.email);
+    // Check if the email has reached its submission limit
+    const hasReachedLimit = await checkDailySubmissionLimit(email);
+    if (hasReachedLimit) {
       return res.status(400).json({
-        error: `Email '${error.keyValue.email}' has already been used to submit the quiz.`,
+        error:
+          "You have already submitted the quiz twice today. Please try again tomorrow.",
       });
     }
 
-    console.error("Error saving quiz submission:", error);
+    // Verify the email with ZeroBounce
+    const isValidEmail = await verifyEmailWithZeroBounce(email);
+    if (!isValidEmail) {
+      return res.status(400).json({ error: "Invalid or undeliverable email." });
+    }
+
+    // Create the lead but mark it as unverified initially
+    const lead = new Lead({
+      email: xss(email),
+      quizAnswers: {
+        q1: xss(quizAnswers.q1),
+        q2: xss(quizAnswers.q2),
+        q3: xss(quizAnswers.q3),
+      },
+      verified: false, // Initially set to false
+    });
+
+    // Generate verification token
+    const token = generateVerificationToken(email);
+
+    // Send verification email
+    const verificationLink = `http://localhost:5500/api/quiz/verify?token=${token}`;
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Verify Your Email - Equator Spa",
+      html: `
+        <h2>Email Verification</h2>
+        <p>Click the link below to verify your email and complete the quiz submission:</p>
+        <a href="${verificationLink}">Verify Email</a>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    // Temporarily save the lead (without saving the answers until verification)
+    await lead.save();
+
+    res
+      .status(200)
+      .json({ message: "Verification email sent. Please check your inbox." });
+  } catch (error) {
+    console.error("Error during quiz submission:", error);
     res.status(500).json({ error: "Failed to submit the quiz" });
+  }
+});
+
+// Verification route
+router.get("/verify", async (req, res) => {
+  const { token } = req.query;
+
+  // Decode token to extract email
+  const email = verifyToken(token);
+
+  if (!email) {
+    return res
+      .status(400)
+      .json({ error: "Invalid or expired verification token." });
+  }
+
+  try {
+    // Mark the lead as verified
+    const lead = await Lead.findOneAndUpdate(
+      { email: email, verified: false }, // Find unverified lead
+      { verified: true }, // Set verified to true
+      { new: true }
+    );
+
+    if (!lead) {
+      return res
+        .status(400)
+        .json({ error: "Lead not found or already verified." });
+    }
+
+    res.status(200).json({
+      message: "Email verified successfully. Quiz submission completed.",
+    });
+  } catch (error) {
+    console.error("Error during verification:", error);
+    res.status(500).json({ error: "Failed to verify email." });
   }
 });
 

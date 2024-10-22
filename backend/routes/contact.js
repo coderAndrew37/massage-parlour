@@ -1,14 +1,27 @@
+// file: routes/contact.js
 const express = require("express");
-const { Contact, validateContact } = require("../models/contact"); // Import the model and validation function
+const { Contact, validateContact } = require("../models/contact");
 const nodemailer = require("nodemailer");
+const rateLimit = require("express-rate-limit"); // Add rate limiting
+const xss = require("xss"); // Add sanitization
 const router = express.Router();
+
+// Rate limiting (e.g., 5 requests per minute)
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 5, // Limit each IP to 5 requests per window
+  message: "Too many requests from this IP, please try again later.",
+});
+
+// Apply rate limiting to contact route
+router.use(limiter);
 
 // Nodemailer transporter setup
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER, // Your email address
-    pass: process.env.EMAIL_PASS, // App password if using Gmail
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -19,42 +32,38 @@ router.post("/", async (req, res) => {
 
   const { name, email, message } = req.body;
 
+  // Sanitize input to avoid XSS attacks
+  const sanitizedMessage = xss(message);
+
   try {
     // Create a new contact entry
     const contact = new Contact({
-      name,
-      email,
-      message,
+      name: xss(name),
+      email: xss(email),
+      message: sanitizedMessage,
     });
 
-    // Save the contact to the database
     await contact.save();
-    console.log("Contact submission saved to database for email:", email);
 
-    // Send the contact message via email using Nodemailer
+    // Email setup
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER, // Your email address
-      subject: `New Contact Message from ${name}`,
+      to: process.env.EMAIL_USER,
+      subject: `New Contact Message from ${xss(name)}`,
       html: `
         <h2>New Message From Contact Form</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong> ${message}</p>
+        <p><strong>Name:</strong> ${xss(name)}</p>
+        <p><strong>Email:</strong> ${xss(email)}</p>
+        <p><strong>Message:</strong> ${sanitizedMessage}</p>
       `,
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email:", error);
-        return res.status(500).json({ error: "Failed to send the message" });
-      } else {
-        console.log("Email sent: " + info.response);
-        return res.status(201).json({ message: "Message sent successfully" });
-      }
-    });
+    // Send the contact message via email
+    await transporter.sendMail(mailOptions);
+
+    res.status(201).json({ message: "Message sent successfully" });
   } catch (error) {
-    console.error("Error saving contact submission:", error);
+    console.error("Error saving contact or sending email:", error);
     res.status(500).json({ error: "Failed to submit the contact form" });
   }
 });
