@@ -1,4 +1,3 @@
-// Custom Bootstrap validation for the contact form with client-side validation
 (function () {
   "use strict";
   const forms = document.querySelectorAll(".needs-validation");

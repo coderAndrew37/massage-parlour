@@ -1,4 +1,4 @@
-const baseURL = "http://localhost:5500"; // Correct backend server URL
+import "./constants.js";
 
 // Spinner element
 const spinner = document.createElement("div");

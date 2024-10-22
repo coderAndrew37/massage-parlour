@@ -1,3 +1,5 @@
+import "./constants.js";
+
 document
   .getElementById("quizForm")
   .addEventListener("submit", async function (event) {
@@ -27,7 +29,7 @@ document
 
     try {
       // Submit the quiz via POST request
-      const response = await fetch("http://localhost:5500/api/quiz", {
+      const response = await fetch(`${baseURL}/api/quiz`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

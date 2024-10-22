@@ -1,5 +1,4 @@
-// file: contactFormValidation.js
-const baseURL = "http://localhost:5500";
+import "./constants.js";
 
 // Custom Bootstrap validation for the Contact form
 (function () {

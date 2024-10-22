@@ -4,7 +4,7 @@ import {
   animateGallery,
 } from "./animations.js"; // Adjust path as necessary
 
-const baseURL = "http://localhost:5500"; // Correct backend server URL
+import "./constants.js";
 
 // Helper function for retrying fetch requests
 async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {

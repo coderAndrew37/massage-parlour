@@ -1,4 +1,4 @@
-const baseURL = "http://localhost:5500";
+import "./constants.js";
 
 (function () {
   "use strict";
