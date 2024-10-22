@@ -12,8 +12,6 @@ const path = require("path");
 
 require("express-async-errors");
 
-const cors = require("cors");
-
 app.use(
   cors({
     origin: [
