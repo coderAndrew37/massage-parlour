@@ -4,7 +4,9 @@ import {
   animateGallery,
 } from "./animations.js"; // Adjust path as necessary
 
-import "./constants.js";
+import { baseURL } from "./constants.js"; // Import baseURL
+
+console.log(`The baseURL:${baseURL}`);
 
 // Helper function for retrying fetch requests
 async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
