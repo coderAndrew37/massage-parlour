@@ -8,10 +8,13 @@
       "submit",
       function (event) {
         if (!form.checkValidity()) {
-          event.preventDefault();
+          event.preventDefault(); // Prevent form from reloading page
           event.stopPropagation();
         } else {
+          // If valid, prevent reload but allow processing
+          event.preventDefault(); // Prevent reload
           alert("Form submitted successfully!");
+          // Form submission logic...
         }
         form.classList.add("was-validated");
       },

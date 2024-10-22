@@ -6,12 +6,6 @@ import {
 
 const baseURL = "http://localhost:5500"; // Correct backend server URL
 
-// Spinner element
-const spinner = document.createElement("div");
-spinner.classList.add("spinner-border", "text-primary");
-spinner.setAttribute("role", "status");
-spinner.innerHTML = '<span class="visually-hidden">Loading...</span>';
-
 // Helper function for retrying fetch requests
 async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
   try {
@@ -24,7 +18,7 @@ async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
     if (retries > 0) {
       console.warn(`Retrying... (${retries} retries left)`);
       await new Promise((resolve) => setTimeout(resolve, delay));
-      return fetchWithRetry(url, options, retries - 1, delay); // Retry after a delay
+      return fetchWithRetry(url, options, retries - 1, delay); // Retry after delay
     } else {
       throw error; // If no retries left, throw the error
     }
@@ -37,33 +31,35 @@ function getElementsPerPage(section) {
     return window.innerWidth >= 992 ? 9 : 6; // 9 services for large screens, 6 for small screens
   }
   if (section === "testimonials" || section === "gallery") {
-    return window.innerWidth >= 992 ? 6 : 3; // 6 elements for large screens, 3 for small screens
+    return window.innerWidth >= 992 ? 6 : 3; // 6 items for large screens, 3 for small screens
   }
-  return 3; // Default to 3
+  return 3; // Default to 3 if section is not specified
 }
 
-// Scroll to a specific section
+// Smooth scroll to a specific section by section ID
 function scrollToSection(sectionId) {
   const section = document.getElementById(sectionId);
   if (section) {
     window.scrollTo({
-      top: section.offsetTop - 100, // Adjust offset if needed
-      behavior: "smooth",
+      top: section.offsetTop - 100, // Adjust the offset to align the section
+      behavior: "smooth", // Smooth scrolling effect
     });
   }
 }
 
-/* ============= SERVICES SECTION WITH PAGINATION ============= */
-
-// Fetch and Render Services with Pagination
+// Fetch and render services
 async function renderServicesGrid(page = 1) {
   const limit = getElementsPerPage("services");
   const servicesGrid = document.querySelector(".js-services-grid");
 
-  try {
-    // Clear skeletons and prepare to show actual data
-    servicesGrid.innerHTML = ""; // Clear the skeletons
+  // Show skeletons before loading data
+  servicesGrid.innerHTML = `
+    <div class="col-md-4 mb-4"><div class="skeleton skeleton-card"></div></div>
+    <div class="col-md-4 mb-4"><div class="skeleton skeleton-card"></div></div>
+    <div class="col-md-4 mb-4"><div class="skeleton skeleton-card"></div></div>
+  `;
 
+  try {
     const { services, currentPage, totalPages } = await fetchWithRetry(
       `${baseURL}/api/services?page=${page}&limit=${limit}`
     );
@@ -91,9 +87,8 @@ async function renderServicesGrid(page = 1) {
       .join("");
 
     servicesGrid.innerHTML = servicesHTML; // Replace skeletons with actual content
-    renderPaginationControls(currentPage, totalPages, "services");
 
-    // Scroll to the services section after loading
+    renderPaginationControls(currentPage, totalPages, "services");
     scrollToSection("services");
 
     animateServices();
@@ -105,16 +100,19 @@ async function renderServicesGrid(page = 1) {
   }
 }
 
-/* ============= TESTIMONIALS SECTION WITH PAGINATION ============= */
-
-// Fetch and Render Testimonials with Pagination
+// Fetch and render testimonials
 async function renderTestimonialsGrid(page = 1) {
   const limit = getElementsPerPage("testimonials");
   const testimonialsGrid = document.querySelector(".js-testimonials-grid");
 
-  try {
-    testimonialsGrid.innerHTML = ""; // Clear the skeletons
+  // Show skeletons before loading data
+  testimonialsGrid.innerHTML = `
+    <div class="col-md-4 mb-4"><div class="skeleton skeleton-testimonial"></div></div>
+    <div class="col-md-4 mb-4"><div class="skeleton skeleton-testimonial"></div></div>
+    <div class="col-md-4 mb-4"><div class="skeleton skeleton-testimonial"></div></div>
+  `;
 
+  try {
     const { testimonials, currentPage, totalPages } = await fetchWithRetry(
       `${baseURL}/api/testimonials?page=${page}&limit=${limit}`
     );
@@ -142,9 +140,8 @@ async function renderTestimonialsGrid(page = 1) {
       .join("");
 
     testimonialsGrid.innerHTML = testimonialsHTML; // Replace skeletons with actual content
-    renderPaginationControls(currentPage, totalPages, "testimonials");
 
-    // Scroll to the testimonials section after loading
+    renderPaginationControls(currentPage, totalPages, "testimonials");
     scrollToSection("testimonials");
 
     animateTestimonials();
@@ -156,16 +153,19 @@ async function renderTestimonialsGrid(page = 1) {
   }
 }
 
-/* ============= GALLERY SECTION WITH PAGINATION ============= */
-
-// Fetch and Render Gallery with Pagination
+// Fetch and render gallery
 async function renderGalleryGrid(page = 1) {
   const limit = getElementsPerPage("gallery");
   const galleryGrid = document.querySelector(".js-gallery-grid");
 
-  try {
-    galleryGrid.innerHTML = ""; // Clear the skeletons
+  // Show skeletons before loading data
+  galleryGrid.innerHTML = `
+    <div class="col-md-4 mb-4"><div class="skeleton skeleton-image"></div></div>
+    <div class="col-md-4 mb-4"><div class="skeleton skeleton-image"></div></div>
+    <div class="col-md-4 mb-4"><div class="skeleton skeleton-image"></div></div>
+  `;
 
+  try {
     const { gallery, currentPage, totalPages } = await fetchWithRetry(
       `${baseURL}/api/gallery?page=${page}&limit=${limit}`
     );
@@ -190,9 +190,8 @@ async function renderGalleryGrid(page = 1) {
       .join("");
 
     galleryGrid.innerHTML = galleryHTML; // Replace skeletons with actual content
-    renderPaginationControls(currentPage, totalPages, "gallery");
 
-    // Scroll to the gallery section after loading
+    renderPaginationControls(currentPage, totalPages, "gallery");
     scrollToSection("gallery");
 
     animateGallery();
@@ -266,7 +265,7 @@ function renderPaginationControls(currentPage, totalPages, section) {
 
 /* ============= SEARCH SECTION ============= */
 
-// Fetch and Render Search Results
+// Fetch and render search results
 async function search(query) {
   try {
     const results = await fetchWithRetry(`${baseURL}/api/search?q=${query}`);
@@ -293,7 +292,7 @@ async function search(query) {
       return;
     }
 
-    // Render Services
+    // Render services
     if (results.services.length) {
       const servicesHTML = results.services
         .map(
@@ -315,7 +314,7 @@ async function search(query) {
       animateServices();
     }
 
-    // Render Testimonials
+    // Render testimonials
     if (results.testimonials.length) {
       const testimonialsHTML = results.testimonials
         .map(
@@ -336,7 +335,7 @@ async function search(query) {
       animateTestimonials();
     }
 
-    // Render Gallery
+    // Render gallery
     if (results.gallery.length) {
       const galleryHTML = results.gallery
         .map(

@@ -1,9 +1,11 @@
 require("dotenv").config(); // This should be at the top of your file
 require("./startup/logger")();
 require("./startup/db")();
+
 const express = require("express");
 const app = express();
 const winston = require("winston");
+require("./startup/prod")(app);
 const cors = require("cors");
 const cookieParser = require("cookie-parser"); // For parsing cookies
 const path = require("path");

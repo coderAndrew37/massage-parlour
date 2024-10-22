@@ -48,8 +48,6 @@ gsap.from("#faqAccordion .accordion-item", {
   },
 });
 
-// animations.js
-
 // GSAP Animation for Hero Section
 export function animateHero() {
   gsap.from(".hero-text h1", {
@@ -110,7 +108,7 @@ export function animateServices() {
     duration: 1,
     y: 50,
     opacity: 0,
-    stagger: 0.3, // Adds staggered delay to each card
+    stagger: 0.3,
     ease: "power3.out",
     scrollTrigger: {
       trigger: "#services",

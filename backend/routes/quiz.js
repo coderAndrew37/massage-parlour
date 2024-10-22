@@ -49,8 +49,8 @@ function getRecommendedTreatment(answers) {
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "omolloandrew37@gmail.com",
-    pass: "eatqfmahgdcjznkx",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -81,7 +81,7 @@ router.post("/", async (req, res) => {
 
     // Send the recommendation to the user's email
     const mailOptions = {
-      from: "your-email@gmail.com", // Your email address as the sender
+      from: process.env.EMAI_USER, // Your email address as the sender
       to: email, // Send email to the user
       subject: "Your Personalized Recommendation - Equator Spa",
       html: `

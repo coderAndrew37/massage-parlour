@@ -1,38 +1,42 @@
 import "./animations.js";
-import "./formValidation.js";
+import "./contactFormValidation.js";
+import "./quizFormValidation.js";
 import "./navbarScroll.js";
 import "./localStorageHandler.js";
 import { search } from "./fetchContent.js";
 import "./quiz.js";
 
-// Save the scroll position when the form is submitted or before reloading
-function saveScrollPosition() {
-  const scrollPos = window.scrollY;
-  localStorage.setItem("scrollPos", scrollPos); // Save current scroll position
-}
+// Save scroll position before page unload (only on reload, not on form submit)
+window.addEventListener("beforeunload", function (e) {
+  const activeElement = document.activeElement;
+  if (!activeElement || activeElement.tagName.toLowerCase() !== "form") {
+    const scrollPos = window.scrollY;
+    localStorage.setItem("scrollPos", scrollPos); // Save scroll position before reload
+  }
+});
 
-// Restore the scroll position after all content is loaded
+// Restore the scroll position after content is injected
 function restoreScrollPosition() {
   const scrollPos = localStorage.getItem("scrollPos");
   if (scrollPos !== null) {
     setTimeout(() => {
-      // Add a slight delay to ensure layout shifts are accounted for
-      window.scrollTo(0, parseInt(scrollPos)); // Scroll back to the saved position
-      localStorage.removeItem("scrollPos"); // Clean up after restoring
-    }, 100); // 100ms delay (adjustable)
+      window.scrollTo(0, parseInt(scrollPos, 10)); // Restore to saved position
+      localStorage.removeItem("scrollPos"); // Clear saved position after restoring
+    }, 100); // Delay can be adjusted based on content load time
   }
 }
 
-// Restore the scroll position after dynamic content is loaded
+// Restore scroll position after all dynamic content is fully loaded
 function restoreScrollAfterContent() {
-  // Ensure dynamic content is loaded before restoring scroll position
+  // Ensure dynamic content (services, testimonials, gallery) is loaded
   Promise.all([
     renderServicesGrid(),
     renderTestimonialsGrid(),
     renderGalleryGrid(),
   ])
     .then(() => {
-      restoreScrollPosition(); // Restore scroll position after all content is loaded
+      // Once all content is loaded, restore the scroll position
+      restoreScrollPosition();
     })
     .catch((error) => {
       console.error(
@@ -44,8 +48,8 @@ function restoreScrollAfterContent() {
 
 // Call restoreScrollAfterContent after DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
-  animateHero(); // Animate the hero section
-  restoreScrollAfterContent(); // Load all content and restore scroll position after it's done
+  animateHero(); // Animate hero section
+  restoreScrollAfterContent(); // Load content and restore scroll position after it's done
 });
 
 // Smooth scroll for anchor links
@@ -62,16 +66,19 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
-// Handle search form submission
+// Handle search form submission without saving scroll position
 document.getElementById("searchForm").addEventListener("submit", (e) => {
   e.preventDefault();
+  localStorage.removeItem("scrollPos"); // Clear saved scroll position
   const query = document.getElementById("searchQuery").value.trim();
   if (query) {
-    search(query); // Call the search function with the input value
+    search(query); // Call search function with input value
   }
 });
 
-// Save scroll position when a form is submitted
-document
-  .getElementById("quizForm")
-  .addEventListener("submit", saveScrollPosition);
+// Prevent auto-scroll on form submission
+document.getElementById("quizForm").addEventListener("submit", function (e) {
+  e.preventDefault(); // Prevent default form submission
+  localStorage.removeItem("scrollPos"); // Clear scroll position
+  // Form submission logic...
+});
