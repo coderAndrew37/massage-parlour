@@ -12,13 +12,11 @@ const path = require("path");
 
 require("express-async-errors");
 
-const cors = require("cors");
-
 app.use(
   cors({
     origin: [
-      "https://massage-2-6xo1wesm3-coderandrew37s-projects.vercel.app", // Vercel frontend
-      "http://127.0.0.1:5500", // Local development
+      "https://massage-2-q1w93y11n-coderandrew37s-projects.vercel.app", // Your Vercel frontend domain
+      "https://massage-2.vercel.app", // Another possible domain on Vercel
     ],
     credentials: true, // Allow credentials (cookies, etc.)
   })
