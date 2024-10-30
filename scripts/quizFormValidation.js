@@ -4,22 +4,27 @@ import "./constants.js";
   "use strict";
   const quizForm = document.getElementById("quizForm");
 
-  quizForm.addEventListener("submit", async function (event) {
-    event.preventDefault(); // Prevent form reload
-    event.stopPropagation();
+  // Ensure the form element exists
+  if (!quizForm) {
+    console.error("Quiz form not found on the page.");
+    return;
+  }
 
-    // Check if the form is valid
+  quizForm.addEventListener("submit", async function (event) {
+    event.preventDefault(); // Prevent default page reload
+    event.stopPropagation(); // Stop further event propagation
+
+    // Check form validity
     if (quizForm.checkValidity()) {
-      // Form is valid, proceed to submit
+      console.log("Form is valid. Proceeding with submission.");
       await handleQuizFormSubmission();
     } else {
-      // Form is invalid, show validation errors
-      quizForm.classList.add("was-validated");
+      console.log("Form is invalid. Showing validation feedback.");
+      quizForm.classList.add("was-validated"); // Show validation feedback
     }
   });
 })();
 
-// Handle quiz form submission logic
 async function handleQuizFormSubmission() {
   const quizForm = document.getElementById("quizForm");
 
@@ -32,14 +37,13 @@ async function handleQuizFormSubmission() {
   };
   const email = formData.get("email");
 
-  // Build the request payload
+  // Payload data without email verification
   const requestData = {
     email: email,
     quizAnswers: quizAnswers,
   };
 
   try {
-    // Send form data to the server (API) using fetch
     const response = await fetch(`${baseURL}/api/quiz`, {
       method: "POST",
       headers: {
@@ -51,11 +55,10 @@ async function handleQuizFormSubmission() {
     const result = await response.json();
 
     if (response.ok) {
-      // If the submission was successful, show the recommendation
       document.getElementById("quizResults").style.display = "block";
       document.getElementById("resultText").textContent = result.recommendation;
     } else {
-      // Show error if submission failed
+      // Display error message if submission failed
       const errorDiv = document.getElementById("submissionError");
       errorDiv.style.display = "block";
       errorDiv.textContent = result.error || "Failed to submit the quiz.";

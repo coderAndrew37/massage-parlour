@@ -1,3 +1,4 @@
+import "./formValidation.js";
 import "./animations.js";
 import "./contactFormValidation.js";
 import "./quizFormValidation.js";

@@ -1,4 +1,3 @@
-// file: routes/contact.js
 const express = require("express");
 const { Contact, validateContact } = require("../models/contact");
 const nodemailer = require("nodemailer");
