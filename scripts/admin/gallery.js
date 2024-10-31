@@ -12,10 +12,10 @@ export async function fetchAndDisplayGallery() {
     if (!response.ok)
       throw new Error(`Error: ${response.status} ${response.statusText}`);
 
-    const galleryItems = await response.json();
+    const data = await response.json();
+    const galleryItems = data.gallery || []; // Ensure it's an array
 
     galleryItems.forEach((item, index) => {
-      // Store gallery item in galleryStore
       galleryStore[item._id] = item;
 
       const row = `

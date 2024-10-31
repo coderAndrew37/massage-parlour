@@ -1,4 +1,9 @@
-import { serviceStore, galleryStore, testimonialStore } from "./admin/store.js";
+import {
+  serviceStore,
+  galleryStore,
+  testimonialStore,
+  teamMemberStore,
+} from "./admin/store.js"; // Import additional store for team members
 
 import {
   fetchAndDisplayServices,
@@ -15,7 +20,11 @@ import {
   attachTestimonialListeners,
   deleteTestimonial,
 } from "./admin/testimonial.js";
-
+import {
+  fetchAndDisplayTeamMembers,
+  attachTeamMemberListeners,
+  deleteTeamMember,
+} from "./admin/teamMember.js"; // New functions for team members
 // Open and Close Modal Functions
 window.openServiceModal = (serviceId) => {
   const service = serviceStore[serviceId];
@@ -135,6 +144,21 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
       });
     }
   });
+});
+
+// Event listeners and fetch functions for all sections
+document.addEventListener("DOMContentLoaded", () => {
+  fetchAndDisplayServices();
+  attachServiceListeners();
+
+  fetchAndDisplayGallery();
+  attachGalleryListeners();
+
+  fetchAndDisplayTestimonials();
+  attachTestimonialListeners();
+
+  fetchAndDisplayTeamMembers(); // Fetch and display team members
+  attachTeamMemberListeners(); // Attach event listeners for team member actions
 });
 
 // Expose delete functions globally for button events

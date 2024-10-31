@@ -3,7 +3,7 @@ export function openModal(modalId, title, item = {}, itemId = null) {
   document.getElementById(modalId).classList.add("active");
   document.getElementById(`${modalId}-title`).innerText = title;
 
-  // Set form values for the given modal
+  // Set form values based on the modal type
   if (itemId) {
     if (modalId === "service-modal") {
       document.getElementById("service-title").value = item.title;
@@ -17,6 +17,11 @@ export function openModal(modalId, title, item = {}, itemId = null) {
       document.getElementById("testimonial-name").value = item.name;
       document.getElementById("testimonial-quote").value = item.quote;
       document.getElementById("testimonial-image").value = item.image;
+    } else if (modalId === "team-member-modal") {
+      document.getElementById("team-member-name").value = item.name;
+      document.getElementById("team-member-role").value = item.role;
+      document.getElementById("team-member-bio").value = item.bio;
+      document.getElementById("team-member-image").value = item.image;
     }
   }
 }

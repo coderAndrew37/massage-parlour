@@ -101,18 +101,17 @@ if (!slug) {
           ? service.videoUrl
           : `${baseURL}/${service.videoUrl.replace(/^\/?/, "")}`;
 
-        // Set the video source
+        // Set the video source and log it to ensure it's correct
+        console.log("Video URL:", fullVideoUrl);
         serviceVideo.src = fullVideoUrl;
         serviceVideo.type = "video/mp4";
 
         // Show the video element and video section
-        videoElement.style.display = "block";
-        videoSection.style.display = "block";
-
-        // Force the video to load immediately
-        videoElement.load();
+        videoSection.style.display = "block"; // Display video section
+        videoElement.load(); // Load video after setting the source
       } else {
         // Hide the video section if no video URL is available
+        console.warn("No video URL available for this service.");
         videoSection.style.display = "none";
       }
 

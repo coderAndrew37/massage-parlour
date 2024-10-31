@@ -1,4 +1,4 @@
-require("dotenv").config(); // This should be at the top of your file
+require("dotenv").config(); // Load environment variables
 require("./startup/logger")();
 require("./startup/db")();
 
@@ -7,20 +7,20 @@ const app = express();
 const winston = require("winston");
 require("./startup/prod")(app);
 const cors = require("cors");
-const cookieParser = require("cookie-parser"); // For parsing cookies
+const cookieParser = require("cookie-parser");
 const path = require("path");
 
 require("express-async-errors");
 
+// Apply CORS globally for all routes
 app.use(
   cors({
     origin: [
-      //setting up localhost cors
-      "http://localhost:3000", // Add your frontend URL here
-      "http://localhost:5500", // Add your frontend URL here
+      "http://localhost:3000",
+      "http://localhost:5500",
       "http://127.0.0.1:5500",
     ],
-    credentials: true, // Allow credentials (cookies, etc.)
+    credentials: true,
   })
 );
 

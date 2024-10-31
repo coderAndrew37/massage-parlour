@@ -14,10 +14,10 @@ export async function fetchAndDisplayTestimonials() {
     if (!response.ok)
       throw new Error(`Error: ${response.status} ${response.statusText}`);
 
-    const testimonials = await response.json();
+    const data = await response.json();
+    const testimonials = data.testimonials || []; // Ensure it's an array
 
     testimonials.forEach((testimonial, index) => {
-      // Store testimonial in testimonialStore
       testimonialStore[testimonial._id] = testimonial;
 
       const row = `
@@ -45,7 +45,6 @@ export async function fetchAndDisplayTestimonials() {
     testimonialsTableBody.innerHTML = `<tr><td colspan="5">Failed to load testimonials: ${error.message}</td></tr>`;
   }
 }
-
 // Add event listeners for the testimonials section
 export function attachTestimonialListeners() {
   const testimonialForm = document.getElementById("testimonial-form");
