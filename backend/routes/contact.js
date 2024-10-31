@@ -38,11 +38,11 @@ transporter.verify((error, success) => {
 // POST route to handle contact form submissions
 router.post("/", async (req, res) => {
   const { error } = validateContact(req.body);
-  if (error) return res.status(400).json({ error: error.details[0].message });
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
 
   const { name, email, message, phone } = req.body;
-
-  // Convert phone number to international format if it starts with "07" or "01"
   const formattedPhone = phone.startsWith("07")
     ? phone.replace(/^07/, "+2547")
     : phone.startsWith("01")
@@ -50,6 +50,7 @@ router.post("/", async (req, res) => {
     : phone;
 
   try {
+    // Save the contact details in the database
     const contact = new Contact({
       name,
       email,
@@ -58,7 +59,8 @@ router.post("/", async (req, res) => {
     });
     await contact.save();
 
-    const mailOptions = {
+    // Email to admin
+    const adminMailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
       subject: `New Contact Message from ${name}`,
@@ -71,7 +73,28 @@ router.post("/", async (req, res) => {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    // Send the admin email
+    await transporter.sendMail(adminMailOptions);
+
+    // Send acknowledgment email to the user
+    const userMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email, // Send to the user's email
+      subject: "We’ve Received Your Message",
+      html: `
+        <h2>Thank you, ${name}!</h2>
+        <p>We have received your message and will get back to you shortly.</p>
+        <p>Here’s a copy of your message for your reference:</p>
+        <blockquote>
+          <p><strong>Message:</strong> ${message}</p>
+        </blockquote>
+        <p>Best regards,<br/>Customer Support Team</p>
+      `,
+    };
+
+    // Send the user acknowledgment email
+    await transporter.sendMail(userMailOptions);
+
     res.status(201).json({ message: "Message sent successfully" });
   } catch (error) {
     console.error("Error in submission process:", error);
