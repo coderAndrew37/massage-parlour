@@ -15,8 +15,10 @@ require("express-async-errors");
 app.use(
   cors({
     origin: [
-      "https://massage-2-q1w93y11n-coderandrew37s-projects.vercel.app", // Your Vercel frontend domain
-      "https://massage-2.vercel.app", // Another possible domain on Vercel
+      //setting up localhost cors
+      "http://localhost:3000", // Add your frontend URL here
+      "http://localhost:5500", // Add your frontend URL here
+      "http://127.0.0.1:5500",
     ],
     credentials: true, // Allow credentials (cookies, etc.)
   })

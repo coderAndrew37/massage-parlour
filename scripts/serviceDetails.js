@@ -1,3 +1,4 @@
+import { baseURL } from "./constants.js";
 import "./constants.js";
 import {
   animateServiceDetails,

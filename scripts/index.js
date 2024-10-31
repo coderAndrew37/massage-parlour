@@ -1,6 +1,5 @@
 import "./formValidation.js";
 import "./animations.js";
-import "./contactFormValidation.js";
 import "./quizFormValidation.js";
 import "./navbarScroll.js";
 import "./localStorageHandler.js";
