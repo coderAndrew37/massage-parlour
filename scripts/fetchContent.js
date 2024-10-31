@@ -205,6 +205,60 @@ async function renderGalleryGrid(page = 1) {
   }
 }
 
+/*==================== FAQs Section ==============================*/
+
+// Fetch and render FAQs
+async function renderFAQs() {
+  const faqContainer = document.getElementById("faqAccordion");
+
+  try {
+    const response = await fetch("scripts/faqs.json"); // Path to JSON file
+    const faqs = await response.json();
+
+    const faqHTML = faqs
+      .map(
+        (faq, index) => `
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="heading${index}">
+            <button
+              class="accordion-button ${index === 0 ? "" : "collapsed"}"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapse${index}"
+              aria-expanded="${index === 0 ? "true" : "false"}"
+              aria-controls="collapse${index}"
+            >
+              ${faq.question}
+            </button>
+          </h2>
+          <div
+            id="collapse${index}"
+            class="accordion-collapse collapse ${index === 0 ? "show" : ""}"
+            aria-labelledby="heading${index}"
+            data-bs-parent="#faqAccordion"
+          >
+            <div class="accordion-body">
+              ${faq.answer}
+            </div>
+          </div>
+        </div>
+      `
+      )
+      .join("");
+
+    faqContainer.innerHTML = faqHTML;
+  } catch (error) {
+    console.error("Error loading FAQs:", error);
+    faqContainer.innerHTML =
+      "<p>Error loading FAQs. Please try again later.</p>";
+  }
+}
+
+// Initialize FAQs on page load
+document.addEventListener("DOMContentLoaded", () => {
+  renderFAQs();
+});
+
 /* ============= PAGINATION CONTROLS ============= */
 
 // Render pagination controls dynamically
