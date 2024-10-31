@@ -1,0 +1,6 @@
+/* Ensures uniform height for images in services cards */
+.js-services-grid .card-img-top {
+  height: 200px; /* Set desired fixed height */
+  object-fit: cover; /* Scales image to cover container without distortion */
+  width: 100%; /* Ensures full width */
+}

@@ -505,3 +505,71 @@
     font-size: 1.8rem;
   }
 }
+
+/* Floating WhatsApp Button Styling */
+.whatsapp-float {
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  bottom: 20px;
+  right: 20px;
+  background-color: #25d366;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+  z-index: 1000;
+  animation: shake 1.5s ease-in-out infinite; /* Apply shake animation */
+}
+
+/* Shake Animation */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+/* WhatsApp Icon */
+.whatsapp-icon {
+  font-size: 24px;
+}
+
+/* Hover Effect */
+.whatsapp-float:hover {
+  background-color: #128c7e;
+}
+
+/* WhatsApp Label Styling */
+.whatsapp-label {
+  visibility: hidden;
+  opacity: 0;
+  width: max-content;
+  background-color: #128c7e;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  position: absolute;
+  bottom: 70px;
+  right: -10px;
+  white-space: nowrap;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+/* Show Label on Hover */
+.whatsapp-float:hover .whatsapp-label {
+  visibility: visible;
+  opacity: 1;
+}
