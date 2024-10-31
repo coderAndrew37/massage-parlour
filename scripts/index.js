@@ -5,6 +5,7 @@ import "./navbarScroll.js";
 import "./localStorageHandler.js";
 import { search } from "./fetchContent.js";
 import "./quiz.js";
+import "./contactFormValidation.js";
 
 // Save scroll position before page unload (only on reload, not on form submit)
 window.addEventListener("beforeunload", function (e) {

@@ -1,6 +1,5 @@
-import "./constants.js";
+import { baseURL } from "./constants.js";
 
-// Custom Bootstrap validation for the Contact form
 (function () {
   "use strict";
   const contactForm = document.querySelector(".contact-form .needs-validation");
@@ -9,23 +8,28 @@ import "./constants.js";
   );
 
   contactForm.addEventListener("submit", async function (event) {
-    event.preventDefault(); // Prevent form reload
-    event.stopPropagation();
+    event.preventDefault(); // Prevent default submission
+    event.stopPropagation(); // Stop further event propagation
 
+    // Clear any previous error message
+    document.getElementById("contactSubmissionError").style.display = "none";
+
+    // Validate form before submission
     if (contactForm.checkValidity()) {
-      // Form is valid, show loading state and proceed to submit
-      submitButton.disabled = true;
-      submitButton.innerHTML = "Sending..."; // Change button text to loading
+      submitButton.disabled = true; // Disable submit button while processing
+      submitButton.textContent = "Sending...";
 
+      // Proceed with submission
       await handleContactFormSubmission();
+
+      submitButton.disabled = false; // Re-enable submit button
+      submitButton.textContent = "Send";
     } else {
-      // Form is invalid, show validation errors
-      contactForm.classList.add("was-validated");
+      contactForm.classList.add("was-validated"); // Show validation errors
     }
   });
 })();
 
-// Handle contact form submission logic
 async function handleContactFormSubmission() {
   const contactForm = document.querySelector(".contact-form .needs-validation");
 
@@ -33,6 +37,7 @@ async function handleContactFormSubmission() {
   const requestData = {
     name: formData.get("name"),
     email: formData.get("email"),
+    phone: formData.get("phone"),
     message: formData.get("message"),
   };
 
@@ -49,18 +54,25 @@ async function handleContactFormSubmission() {
 
     if (response.ok) {
       alert("Message sent successfully!");
-      contactForm.reset();
-      contactForm.classList.remove("was-validated");
+
+      // Clear localStorage fields after successful submission
+      localStorage.removeItem("name");
+      localStorage.removeItem("email");
+      localStorage.removeItem("message");
+
+      contactForm.reset(); // Reset the form fields
+      contactForm.classList.remove("was-validated"); // Remove validation classes
     } else {
-      alert(result.error || "Failed to send the message.");
+      displayError(result.error || "Failed to send the message.");
     }
   } catch (error) {
-    alert("An error occurred while sending the message.");
-  } finally {
-    const submitButton = document.querySelector(
-      ".contact-form button[type='submit']"
-    );
-    submitButton.disabled = false;
-    submitButton.innerHTML = "Submit"; // Restore button text after submission
+    console.error("Error during fetch:", error);
+    displayError("An error occurred while sending the message.");
   }
+}
+
+function displayError(message) {
+  const errorContainer = document.getElementById("contactSubmissionError");
+  errorContainer.textContent = message;
+  errorContainer.style.display = "block";
 }
