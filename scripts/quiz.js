@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     event.stopPropagation();
 
+    // Stop propagation of the event to prevent form submission from reloading the page
+    event.stopImmediatePropagation(); // Prevent multiple event triggers
+
     // Clear previous messages and errors
     document.getElementById("quizResults").style.display = "none";
     const errorContainer = document.getElementById("submissionError");
@@ -35,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// Update handleQuizFormSubmission to display recommendation
 async function handleQuizFormSubmission() {
   const quizForm = document.getElementById("quizForm");
 
@@ -62,11 +66,11 @@ async function handleQuizFormSubmission() {
 
     const result = await response.json();
     if (response.ok) {
-      // Display success message and recommendation
+      // Display success message and recommendation in quizResults section
       document.getElementById("quizResults").style.display = "block";
       document.getElementById("resultText").textContent =
         result.recommendation || "Thank you for submitting the quiz!";
-      quizForm.reset(); // Clear all form fields, including the email field
+      quizForm.reset();
     } else {
       displayError(result.error || "Failed to submit the quiz.");
     }

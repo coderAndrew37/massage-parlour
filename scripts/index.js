@@ -1,6 +1,6 @@
 import "./formValidation.js";
 import "./animations.js";
-import "./quizFormValidation.js";
+//import "./quizFormValidation.js";
 import "./navbarScroll.js";
 import "./localStorageHandler.js";
 import { search } from "./fetchContent.js";
