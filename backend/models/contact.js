@@ -37,15 +37,30 @@ const contactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model("Contact", contactSchema);
 
-// Validate contact data using Joi
 function validateContact(contact) {
   const schema = Joi.object({
-    name: Joi.string().min(3).max(100).required(),
-    email: Joi.string().email().required(),
-    message: Joi.string().min(10).max(1000).required(),
+    name: Joi.string().min(3).max(100).required().messages({
+      "string.base": "Name must be a text string.",
+      "string.empty": "Please enter your name.",
+      "string.min": "Name should have at least 3 characters.",
+      "any.required": "Name is a required field.",
+    }),
+    email: Joi.string().email().required().messages({
+      "string.email": "Please enter a valid email address.",
+      "any.required": "Email is a required field.",
+    }),
+    message: Joi.string().min(10).max(1000).required().messages({
+      "string.min": "Message should be at least 10 characters long.",
+      "any.required": "Message is a required field.",
+    }),
     phone: Joi.string()
-      .pattern(/^(07|01)\d{8}$/) // Kenyan format starting with 07 or 01 and followed by 8 digits
-      .required(),
+      .pattern(/^(07|01)\d{8}$/)
+      .required()
+      .messages({
+        "string.pattern.base":
+          "Phone number must start with 07 or 01 and contain 10 digits.",
+        "any.required": "Phone number is a required field.",
+      }),
   });
   return schema.validate(contact);
 }
