@@ -81,43 +81,7 @@
 
     <!-- Service Information Section -->
     <section class="container mt-5">
-      <div id="service-content">
-        <!-- Right Column: Service Information and Benefits -->
-        <div class="right-column">
-          <!-- Skeletons -->
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-text mb-3"></div>
-          <div class="skeleton skeleton-text mb-3"></div>
-          <div class="skeleton skeleton-text mb-3"></div>
-          <div class="skeleton skeleton-price"></div>
-
-          <!-- Actual content (hidden by default, displayed after data is loaded) -->
-          <h1 id="service-title" class="display-4" style="display: none"></h1>
-          <p id="service-description" class="lead" style="display: none"></p>
-
-          <div id="service-price-container" style="display: none">
-            <span class="price-label">Price:</span>
-            <span id="service-price"></span>
-          </div>
-
-          <h3 style="display: none">Benefits</h3>
-          <ul id="service-benefits" class="list-unstyled" style="display: none">
-            <!-- Benefits will be dynamically injected here -->
-          </ul>
-
-          <!-- Skeleton Button -->
-          <div class="skeleton skeleton-button"></div>
-
-          <!-- Book Now Button (hidden by default) -->
-          <a
-            href="https://wa.me/254741497537"
-            target="_blank"
-            style="display: none"
-          >
-            <button class="book-now-button">Book Now</button>
-          </a>
-        </div>
-
+      <div id="service-content" class="service-content">
         <!-- Left Column: Service Image -->
         <div class="left-column">
           <div class="skeleton skeleton-image"></div>
@@ -125,9 +89,54 @@
             id="service-image"
             src=""
             alt="Service Image"
-            class="img-fluid mb-4"
+            class="img-fluid"
             style="display: none"
           />
+        </div>
+
+        <!-- Right Column: Service Information and Benefits -->
+        <div class="right-column">
+          <!-- Skeletons for loading state -->
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-text mb-3"></div>
+          <div class="skeleton skeleton-text mb-3"></div>
+          <div class="skeleton skeleton-text mb-3"></div>
+          <div class="skeleton skeleton-price"></div>
+
+          <!-- Service Content (hidden by default) -->
+          <h1 id="service-title" class="service-title" style="opacity: 0"></h1>
+          <p
+            id="service-description"
+            class="service-description"
+            style="opacity: 0"
+          ></p>
+
+          <div
+            id="service-price-container"
+            class="service-price-container"
+            style="opacity: 0"
+          >
+            <span class="price-label">Price:</span>
+            <span id="service-price"></span>
+          </div>
+
+          <h3 class="benefits-heading" style="opacity: 0">Benefits</h3>
+          <ul
+            id="service-benefits"
+            class="list-unstyled service-benefits"
+            style="opacity: 0"
+          >
+            <!-- Benefits will be dynamically injected here -->
+          </ul>
+
+          <!-- Book Now Button (hidden by default) -->
+          <a
+            href="https://wa.me/254741497537?text=Hello%2C%20I%20would%20like%20to%20book%20a%20massage%20session%20at%20Equator%20Spa."
+            target="_blank"
+            style="opacity: 0"
+          >
+            <button class="book-now-button">Book Now</button>
+          </a>
         </div>
       </div>
     </section>
@@ -185,8 +194,40 @@
     </section>
 
     <!-- Footer (reuse the same footer from your main page) -->
+    <!-- Footer Section -->
     <footer class="footer py-4">
-      <!-- Footer content -->
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h5>About Equator Spa</h5>
+            <p>
+              Equator Spa is dedicated to providing a luxurious experience with
+              natural products and expert therapists.
+            </p>
+          </div>
+
+          <div class="col-md-4">
+            <h5>Quick Links</h5>
+            <ul class="list-unstyled">
+              <li><a href="#services">Our Services</a></li>
+              <li><a href="#about-us">Why Choose Us</a></li>
+              <li><a href="#faq">FAQs</a></li>
+              <li><a href="#contact-us">Contact Us</a></li>
+            </ul>
+          </div>
+
+          <div class="col-md-4">
+            <h5>Get In Touch</h5>
+            <p><i class="fas fa-envelope"></i> info@getintouch.we</p>
+            <p><i class="fas fa-phone"></i> +24 56 89 146</p>
+            <p><i class="fas fa-map-marker-alt"></i> 14 Greenroad St.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center py-3">
+        <p>&copy; 2024 Equator Spa. All Rights Reserved.</p>
+      </div>
     </footer>
 
     <!-- Bootstrap and GSAP Scripts -->

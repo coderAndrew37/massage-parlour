@@ -1,14 +1,16 @@
-// GSAP Animation for Service Details Section
+gsap.registerPlugin(ScrollTrigger);
+
+// GSAP Animation for Service Image and CTA Button Only
 export function animateServiceDetails() {
   const mediaQueryLarge = window.matchMedia("(min-width: 769px)");
-  const mediaQuerySmall = window.matchMedia("(max-width: 768px)");
 
   // For larger screens
   if (mediaQueryLarge.matches) {
     gsap.from("#service-image", {
-      duration: 0.8,
-      x: 80, // Move the image in from the right
-      ease: "power1.out",
+      duration: 1,
+      x: -100, // Move image from the left
+      opacity: 0,
+      ease: "power2.out",
       scrollTrigger: {
         trigger: "#service-content",
         start: "top 80%",
@@ -17,40 +19,41 @@ export function animateServiceDetails() {
 
     gsap.from(".book-now-button", {
       duration: 1,
-      scale: 0.85,
-      ease: "power1.out",
+      y: 20,
+      opacity: 0,
+      ease: "back.out(1.7)", // Slight bounce for the CTA button
       scrollTrigger: {
         trigger: "#service-content",
-        start: "top 80%",
+        start: "top 85%",
       },
     });
-  }
-
-  // For smaller screens
-  if (mediaQuerySmall.matches) {
+  } else {
+    // For smaller screens, keep animations subtle
     gsap.from("#service-image", {
-      duration: 0.5,
-      x: 0, // Keep movement neutral for smaller screens
-      ease: "power1.out",
+      duration: 0.8,
+      opacity: 0,
+      x: 0,
+      ease: "power2.out",
       scrollTrigger: {
         trigger: "#service-content",
-        start: "top 80%",
+        start: "top 85%",
       },
     });
 
     gsap.from(".book-now-button", {
-      duration: 0.6,
-      scale: 1,
-      ease: "power1.out",
+      duration: 0.8,
+      y: 20,
+      opacity: 0,
+      ease: "back.out(1.7)",
       scrollTrigger: {
         trigger: "#service-content",
-        start: "top 80%",
+        start: "top 90%",
       },
     });
   }
 }
 
-// GSAP Animation for Additional Images Section
+// Additional animations
 export function animateAdditionalImages() {
   const additionalImages = document.querySelectorAll("#additional-images .col");
 
@@ -65,18 +68,16 @@ export function animateAdditionalImages() {
         start: "top 80%",
       },
     });
-  } else {
-    console.warn("No additional images found to animate.");
   }
 }
 
-// GSAP Animation for Service Testimonials Section
+// Service Testimonials Animation
 export function animateServiceTestimonials() {
   gsap.from(".testimonial-box", {
-    duration: 1, // Slightly faster
-    y: 60, // Shorter slide for smoother transition
-    stagger: 0.2, // Reduce delay between testimonials for quick loading
-    ease: "power1.out", // Smooth easing
+    duration: 1,
+    y: 60,
+    stagger: 0.2,
+    ease: "power1.out",
     scrollTrigger: {
       trigger: "#testimonials",
       start: "top 80%",
@@ -84,13 +85,13 @@ export function animateServiceTestimonials() {
   });
 }
 
-// GSAP Animation for Related Services Section
+// Related Services Section Animation
 export function animateRelatedServices() {
   gsap.from(".js-related-services-grid .card", {
-    duration: 0.9, // Slightly quicker load
-    y: 60, // Shorter slide
-    stagger: 0.15, // Quicker stagger for faster card load
-    ease: "power1.out", // Smoother easing
+    duration: 0.9,
+    y: 60,
+    stagger: 0.15,
+    ease: "power1.out",
     scrollTrigger: {
       trigger: "#related-services",
       start: "top 80%",
@@ -98,12 +99,12 @@ export function animateRelatedServices() {
   });
 }
 
-// Hover effect for buttons (optional)
+// Hover effect for buttons
 export function addHoverAnimations() {
   const buttons = document.querySelectorAll(".btn, .book-now-button");
   buttons.forEach((button) => {
     button.addEventListener("mouseenter", () => {
-      gsap.to(button, { scale: 1.1, duration: 0.2, ease: "power2.out" }); // Quick hover effect
+      gsap.to(button, { scale: 1.1, duration: 0.2, ease: "power2.out" });
     });
     button.addEventListener("mouseleave", () => {
       gsap.to(button, { scale: 1, duration: 0.2, ease: "power2.out" });
@@ -111,12 +112,12 @@ export function addHoverAnimations() {
   });
 }
 
-// Hover effect for service images (optional)
+// Hover effect for images
 export function addImageHoverAnimations() {
   const images = document.querySelectorAll("img");
   images.forEach((image) => {
     image.addEventListener("mouseenter", () => {
-      gsap.to(image, { scale: 1.05, duration: 0.3, ease: "power2.out" }); // Slight zoom effect
+      gsap.to(image, { scale: 1.05, duration: 0.3, ease: "power2.out" });
     });
     image.addEventListener("mouseleave", () => {
       gsap.to(image, { scale: 1, duration: 0.3, ease: "power2.out" });
