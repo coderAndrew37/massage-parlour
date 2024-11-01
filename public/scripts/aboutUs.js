@@ -1,5 +1,4 @@
-import "./constants.js";
-
+import { baseURL } from "./constants.js";
 // Spinner element
 const spinner = document.createElement("div");
 spinner.classList.add("spinner-border", "text-primary");

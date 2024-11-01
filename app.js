@@ -1,4 +1,4 @@
-require("dotenv").config(); // Load environment variables
+require("dotenv").config();
 require("./backend/startup/logger")();
 require("./backend/startup/db")();
 
@@ -9,13 +9,11 @@ require("./backend/startup/prod")(app);
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+const helmet = require("helmet"); // Use helmet for setting security headers
 
 require("express-async-errors");
 
-// Configure helmet with a relaxed Content Security Policy for scripts
-const helmet = require("helmet"); // Use helmet for setting security headers
-
-// Configure helmet with a relaxed Content Security Policy for scripts and styles
+// Configure helmet with a Content Security Policy that includes frame sources
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -30,11 +28,12 @@ app.use(
         styleSrc: [
           "'self'",
           "https://cdn.jsdelivr.net",
-          "https://cdnjs.cloudflare.com", // Added to allow Font Awesome CSS
-          "'unsafe-inline'", // Allows inline styles (use with caution)
+          "https://cdnjs.cloudflare.com",
+          "'unsafe-inline'", // Allows inline styles (use cautiously)
         ],
-        imgSrc: ["'self'", "data:"], // Adjust as needed for images
-        fontSrc: ["'self'", "https://cdnjs.cloudflare.com"], // Allow external fonts from cdnjs
+        imgSrc: ["'self'", "data:"],
+        fontSrc: ["'self'", "https://cdnjs.cloudflare.com"],
+        frameSrc: ["'self'", "https://www.google.com"], // Add Google to frame sources
       },
     },
   })
@@ -61,19 +60,19 @@ app.use((req, res, next) => {
       if (err) next(); // If the file is not found, continue to the next middleware
     });
   } else {
-    next(); // Continue to the next middleware if the path includes an extension or is the root
+    next();
   }
 });
 
 // Serve all static files from 'public' (HTML, CSS, JS, images, videos)
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(express.json()); // Parse JSON bodies
-app.use(cookieParser()); // Parse cookies for token handling
+app.use(express.json());
+app.use(cookieParser());
 
 // Routes and middleware
-require("./backend/startup/routes")(app); // Initialize all routes
-require("./backend/startup/errorHandler")(); // Error handler middleware
+require("./backend/startup/routes")(app);
+require("./backend/startup/errorHandler")();
 
 // Handle 404 errors for missing static files
 app.use((req, res) => {

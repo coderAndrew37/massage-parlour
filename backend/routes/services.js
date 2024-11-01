@@ -22,21 +22,27 @@ function paginate(array, page, limit) {
 }
 
 // Public route: Fetch all services with pagination
+// Public route: Fetch all services with pagination
 router.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 6; // Default limit to 6 services per page
 
   try {
-    const services = await Service.find();
+    // Get total count of services
+    const totalCount = await Service.countDocuments();
+
+    // Fetch paginated services
+    const services = await Service.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
     if (!services.length) {
       return res.status(404).json({ message: "No services found" });
     }
 
-    const paginatedServices = paginate(services, page, limit);
-    const totalPages = Math.ceil(services.length / limit);
+    const totalPages = Math.ceil(totalCount / limit);
 
     res.json({
-      services: paginatedServices,
+      services,
       currentPage: page,
       totalPages: totalPages,
     });
@@ -82,22 +88,25 @@ router.post("/", async (req, res) => {
   const { error } = validateService(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
-  // Create a new service object
-  const service = new Service({
-    title: req.body.title,
-    description: req.body.description,
-    priceCents: req.body.priceCents,
-    image: req.body.image,
-    slug: slugify(req.body.title, { lower: true }), // Generate a slug from the title
-    additionalImages: req.body.additionalImages, // Add additional images
-    videoUrl: req.body.videoUrl, // Add video URL if provided
-    benefits: req.body.benefits, // Add benefits if provided
-    relatedServiceIds: req.body.relatedServiceIds.map((id) =>
-      mongoose.Types.ObjectId(id)
-    ), // Convert relatedServiceIds to ObjectId
-  });
-
   try {
+    // Generate a unique slug
+    const slug = await generateUniqueSlug(req.body.title);
+
+    // Create a new service object
+    const service = new Service({
+      title: req.body.title,
+      description: req.body.description,
+      priceCents: req.body.priceCents,
+      image: req.body.image,
+      slug, // Use the unique slug here
+      additionalImages: req.body.additionalImages,
+      videoUrl: req.body.videoUrl,
+      benefits: req.body.benefits,
+      relatedServiceIds: req.body.relatedServiceIds.map((id) =>
+        mongoose.Types.ObjectId(id)
+      ),
+    });
+
     // Save the service to the database
     await service.save();
     res.status(201).json(service);
