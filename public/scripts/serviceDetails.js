@@ -30,42 +30,44 @@ if (!slug) {
         service.title || "Service Title";
       document.getElementById("service-description").innerText =
         service.description || "No description available.";
-      document.getElementById("service-price").innerHTML = `<strong>$${(
+      document.getElementById("service-price").innerText = `$${(
         service.priceCents / 100
-      ).toFixed(2)}</strong>`;
+      ).toFixed(2)}`;
       document.getElementById("service-image").src =
         service.image || "images/placeholder.jpg";
 
-      document.getElementById("service-title").style.display = "block";
-      document.getElementById("service-description").style.display = "block";
-      document.getElementById("service-price-container").style.display =
-        "block";
-      document.getElementById("service-image").style.display = "block";
-      document.querySelector(".book-now-button").style.display = "block";
+      // Display elements and reset opacity
+      document.getElementById("service-title").style.cssText =
+        "display: block; opacity: 1";
+      document.getElementById("service-description").style.cssText =
+        "display: block; opacity: 1";
+      document.getElementById("service-price-container").style.cssText =
+        "display: flex; opacity: 1";
+      document.getElementById("service-image").style.cssText =
+        "display: block; opacity: 1";
+      document.querySelector(".book-now-button").style.cssText =
+        "display: inline-block; opacity: 1";
 
       // Hide skeletons after content is loaded
       document.querySelectorAll(".skeleton").forEach((skeleton) => {
         skeleton.style.display = "none";
       });
 
-      // Render benefits
+      // Render benefits if available
       const benefitsList = document.getElementById("service-benefits");
+      const benefitsHeading = document.querySelector(".benefits-heading");
       if (service.benefits && service.benefits.length > 0) {
-        benefitsList.innerHTML = "";
-        service.benefits.forEach((benefit) => {
-          const listItem = document.createElement("li");
-          const iconElement = document.createElement("i");
-          iconElement.className = benefit.icon;
-          iconElement.style.marginRight = "10px";
-          listItem.appendChild(iconElement);
-          listItem.appendChild(document.createTextNode(benefit.description));
-          benefitsList.appendChild(listItem);
-        });
-        benefitsList.style.display = "block";
-        document.querySelector("h3").style.display = "block";
+        benefitsList.innerHTML = service.benefits
+          .map(
+            (benefit) =>
+              `<li><i class="${benefit.icon}" style="margin-right: 10px"></i>${benefit.description}</li>`
+          )
+          .join("");
+        benefitsList.style.cssText = "display: block; opacity: 1";
+        benefitsHeading.style.cssText = "display: block; opacity: 1";
       } else {
         benefitsList.style.display = "none";
-        document.querySelector("h3").style.display = "none";
+        benefitsHeading.style.display = "none";
       }
 
       // Handle additional images
@@ -91,27 +93,17 @@ if (!slug) {
           "<p>No additional images available.</p>";
       }
 
-      // Remove skeleton and focus on rendering the video directly
+      // Display video if URL available
       const serviceVideo = document.getElementById("service-video-source");
-      const videoElement = document.getElementById("service-video");
       const videoSection = document.getElementById("service-video-section");
-
       if (service.videoUrl) {
         const fullVideoUrl = service.videoUrl.startsWith("http")
           ? service.videoUrl
-          : `${baseURL}/${service.videoUrl.replace(/^\/?/, "")}`;
-
-        // Set the video source and log it to ensure it's correct
-        console.log("Video URL:", fullVideoUrl);
+          : `${baseURL}/${service.videoUrl}`;
         serviceVideo.src = fullVideoUrl;
-        serviceVideo.type = "video/mp4";
-
-        // Show the video element and video section
-        videoSection.style.display = "block"; // Display video section
-        videoElement.load(); // Load video after setting the source
+        videoSection.style.display = "block";
+        document.getElementById("service-video").load();
       } else {
-        // Hide the video section if no video URL is available
-        console.warn("No video URL available for this service.");
         videoSection.style.display = "none";
       }
 
@@ -120,7 +112,7 @@ if (!slug) {
       renderServiceTestimonials(service._id);
     } catch (error) {
       console.error("Error fetching service details:", error);
-      document.getElementById("service-details").innerHTML =
+      document.getElementById("service-content").innerHTML =
         "<p>Failed to load service details. Please try again later.</p>";
     }
   }
