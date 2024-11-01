@@ -573,3 +573,8 @@
   visibility: visible;
   opacity: 1;
 }
+
+.js-services-grid,
+.js-gallery-grid {
+  min-height: 400px; /* Adjust as needed for each section */
+}

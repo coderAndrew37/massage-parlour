@@ -1,3 +1,5 @@
+gsap.registerPlugin(ScrollTrigger);
+
 // GSAP Animation for About Us Section
 gsap.from("#about-us h2", {
   duration: 1,

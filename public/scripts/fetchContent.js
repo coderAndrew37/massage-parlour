@@ -50,6 +50,7 @@ function scrollToSection(sectionId) {
 }
 
 // Fetch and render services
+// Fetch and render services
 async function renderServicesGrid(page = 1) {
   const limit = getElementsPerPage("services");
   const servicesGrid = document.querySelector(".js-services-grid");
@@ -74,27 +75,28 @@ async function renderServicesGrid(page = 1) {
     const servicesHTML = services
       .map(
         (service) => `
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <img src="${service.image}" class="card-img-top" alt="${service.title}" loading="lazy" />
-          <div class="card-body">
-            <h5 class="card-title">${service.title}</h5>
-            <p class="card-text">${service.description}</p>
-            <a href="/service-details.html?slug=${service.slug}" class="btn btn-primary">Learn More</a>
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img src="${service.image}" class="card-img-top" alt="${service.title}" loading="lazy" />
+            <div class="card-body">
+              <h5 class="card-title">${service.title}</h5>
+              <p class="card-text">${service.description}</p>
+              <a href="/service-details.html?slug=${service.slug}" class="btn btn-primary">Learn More</a>
+            </div>
           </div>
         </div>
-      </div>
-    `
+      `
       )
       .join("");
 
-    servicesGrid.innerHTML = servicesHTML; // Replace skeletons with actual content
+    servicesGrid.innerHTML = servicesHTML;
 
     renderPaginationControls(currentPage, totalPages, "services");
     scrollToSection("services");
 
     animateServices();
-    ScrollTrigger.refresh();
+
+    setTimeout(() => ScrollTrigger.refresh(), 100); // Refresh scroll after a slight delay
   } catch (error) {
     console.error("Error fetching services:", error);
     servicesGrid.innerHTML =
@@ -107,7 +109,6 @@ async function renderTestimonialsGrid(page = 1) {
   const limit = getElementsPerPage("testimonials");
   const testimonialsGrid = document.querySelector(".js-testimonials-grid");
 
-  // Show skeletons before loading data
   testimonialsGrid.innerHTML = `
     <div class="col-md-4 mb-4"><div class="skeleton skeleton-testimonial"></div></div>
     <div class="col-md-4 mb-4"><div class="skeleton skeleton-testimonial"></div></div>
@@ -128,26 +129,27 @@ async function renderTestimonialsGrid(page = 1) {
     const testimonialsHTML = testimonials
       .map(
         (testimonial) => `
-      <div class="col-md-4 mb-4">
-        <div class="testimonial-box">
-          <img src="${testimonial.image}" alt="${testimonial.name}" />
-          <blockquote class="blockquote">
-            <p>${testimonial.quote}</p>
-            <footer class="blockquote-footer">${testimonial.name}</footer>
-          </blockquote>
+        <div class="col-md-4 mb-4">
+          <div class="testimonial-box">
+            <img src="${testimonial.image}" alt="${testimonial.name}" />
+            <blockquote class="blockquote">
+              <p>${testimonial.quote}</p>
+              <footer class="blockquote-footer">${testimonial.name}</footer>
+            </blockquote>
+          </div>
         </div>
-      </div>
-    `
+      `
       )
       .join("");
 
-    testimonialsGrid.innerHTML = testimonialsHTML; // Replace skeletons with actual content
+    testimonialsGrid.innerHTML = testimonialsHTML;
 
     renderPaginationControls(currentPage, totalPages, "testimonials");
     scrollToSection("testimonials");
 
     animateTestimonials();
-    ScrollTrigger.refresh();
+
+    setTimeout(() => ScrollTrigger.refresh(), 100);
   } catch (error) {
     console.error("Error fetching testimonials:", error);
     testimonialsGrid.innerHTML =
@@ -160,7 +162,6 @@ async function renderGalleryGrid(page = 1) {
   const limit = getElementsPerPage("gallery");
   const galleryGrid = document.querySelector(".js-gallery-grid");
 
-  // Show skeletons before loading data
   galleryGrid.innerHTML = `
     <div class="col-md-4 mb-4"><div class="skeleton skeleton-image"></div></div>
     <div class="col-md-4 mb-4"><div class="skeleton skeleton-image"></div></div>
@@ -180,24 +181,25 @@ async function renderGalleryGrid(page = 1) {
     const galleryHTML = gallery
       .map(
         (item) => `
-      <div class="col-md-4 mb-4">
-        <img src="${item.image}" alt="${item.title}" />
-        <div class="gallery-overlay">
-          <div class="gallery-text">${item.title}</div>
-          <a href="https://wa.me/254746577838" class="book-now-link">Book Now</a>
+        <div class="col-md-4 mb-4">
+          <img src="${item.image}" alt="${item.title}" />
+          <div class="gallery-overlay">
+            <div class="gallery-text">${item.title}</div>
+            <a href="https://wa.me/254746577838" class="book-now-link">Book Now</a>
+          </div>
         </div>
-      </div>
-    `
+      `
       )
       .join("");
 
-    galleryGrid.innerHTML = galleryHTML; // Replace skeletons with actual content
+    galleryGrid.innerHTML = galleryHTML;
 
     renderPaginationControls(currentPage, totalPages, "gallery");
     scrollToSection("gallery");
 
     animateGallery();
-    ScrollTrigger.refresh();
+
+    setTimeout(() => ScrollTrigger.refresh(), 100);
   } catch (error) {
     console.error("Error fetching gallery items:", error);
     galleryGrid.innerHTML =

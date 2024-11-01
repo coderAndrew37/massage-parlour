@@ -36,8 +36,10 @@ function restoreScrollAfterContent() {
     renderGalleryGrid(),
   ])
     .then(() => {
-      // Once all content is loaded, restore the scroll position
-      restoreScrollPosition();
+      setTimeout(() => {
+        // After a slight delay to ensure content has rendered fully
+        restoreScrollPosition();
+      }, 100); // Adjust delay if needed for smooth restoration
     })
     .catch((error) => {
       console.error(

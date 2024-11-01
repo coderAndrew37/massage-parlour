@@ -28,6 +28,7 @@
     "express": "^4.21.0",
     "express-async-errors": "^3.1.1",
     "express-rate-limit": "^7.4.1",
+    "gsap": "^3.12.5",
     "helmet": "^8.0.0",
     "joi": "^17.13.3",
     "joi-password-complexity": "^5.2.0",
