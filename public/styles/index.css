@@ -337,17 +337,6 @@
   line-height: 1.7;
 }
 
-.footer p a {
-  color: rgb(255, 98, 0);
-  text-decoration: none;
-  transition: transform 0.2s ease, color 0.2s ease; /* Smooth transition */
-}
-
-.footer p a:hover {
-  transform: scale(1.1) translateY(-2px); /* Combined scaling and translation */
-  color: red;
-}
-
 .footer ul {
   padding-left: 0;
   list-style: none;
