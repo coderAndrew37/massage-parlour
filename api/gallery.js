@@ -1,52 +1,57 @@
+// api/gallery.js
 const express = require("express");
-const { Gallery, validateGallery } = require("../models/gallery"); // Import model and validation function
-const router = express.Router();
+const connectToDatabase = require("../startup/db");
+const { Gallery, validateGallery } = require("../models/gallery");
+const app = express();
+app.use(express.json());
 
-// Helper function for pagination
-function paginate(array, page, limit) {
-  return array.slice((page - 1) * limit, page * limit);
-}
+// Fetch all gallery items with pagination
+app.get("/", async (req, res) => {
+  await connectToDatabase();
 
-// Public route: Fetch all gallery items with pagination
-router.get("/", async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Default page is 1
-  const limit = parseInt(req.query.limit) || 6; // Default limit is 6 items per page
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 6;
 
   try {
-    const galleryItems = await Gallery.find(); // Fetch all items
-    if (!galleryItems.length) {
-      return res.status(404).json({ message: "No gallery items found" });
-    }
-
-    const paginatedGallery = paginate(galleryItems, page, limit); // Paginate the results
-    const totalPages = Math.ceil(galleryItems.length / limit); // Calculate total pages
+    const galleryItems = await Gallery.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
+    const totalItems = await Gallery.countDocuments();
+    const totalPages = Math.ceil(totalItems / limit);
 
     res.json({
-      gallery: paginatedGallery,
+      gallery: galleryItems,
       currentPage: page,
       totalPages: totalPages,
     });
   } catch (error) {
+    console.error("Error fetching gallery items:", error);
     res.status(500).json({ error: "Failed to fetch gallery items" });
   }
 });
 
-// Protected route: Add a new gallery item (admin only)
-router.post("/", async (req, res) => {
+// Add a new gallery item (admin only)
+app.post("/", async (req, res) => {
+  await connectToDatabase();
+
   const { error } = validateGallery(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
   const galleryItem = new Gallery(req.body);
+
   try {
     await galleryItem.save();
     res.status(201).json(galleryItem);
   } catch (error) {
+    console.error("Error adding gallery item:", error);
     res.status(500).json({ error: "Failed to add gallery item" });
   }
 });
 
-// Protected route: Update a gallery item (admin only)
-router.put("/:id", async (req, res) => {
+// Update a gallery item by ID (admin only)
+app.put("/:id", async (req, res) => {
+  await connectToDatabase();
+
   const { error } = validateGallery(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
@@ -60,20 +65,24 @@ router.put("/:id", async (req, res) => {
       return res.status(404).json({ error: "Gallery item not found" });
     res.json(galleryItem);
   } catch (error) {
+    console.error("Error updating gallery item:", error);
     res.status(500).json({ error: "Failed to update gallery item" });
   }
 });
 
-// Protected route: Delete a gallery item (admin only)
-router.delete("/:id", async (req, res) => {
+// Delete a gallery item by ID (admin only)
+app.delete("/:id", async (req, res) => {
+  await connectToDatabase();
+
   try {
     const galleryItem = await Gallery.findByIdAndDelete(req.params.id);
     if (!galleryItem)
       return res.status(404).json({ error: "Gallery item not found" });
-    res.json(galleryItem);
+    res.json({ message: "Gallery item deleted successfully", galleryItem });
   } catch (error) {
+    console.error("Error deleting gallery item:", error);
     res.status(500).json({ error: "Failed to delete gallery item" });
   }
 });
 
-module.exports = router;
+module.exports = app;

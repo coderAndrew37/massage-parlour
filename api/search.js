@@ -1,18 +1,21 @@
+// api/search.js
 const express = require("express");
+const connectToDatabase = require("../startup/db");
 const { Service } = require("../models/service");
 const { Testimonial } = require("../models/testimonial");
 const { Gallery } = require("../models/gallery");
-const router = express.Router();
+const app = express();
 
-// Search across services, testimonials, and gallery
-router.get("/", async (req, res) => {
+// Search across services, testimonials, and gallery items
+app.get("/", async (req, res) => {
+  await connectToDatabase();
+
   const query = req.query.q;
   if (!query) {
     return res.status(400).json({ message: "No search query provided" });
   }
 
   try {
-    // Perform a case-insensitive search across models
     const services = await Service.find({
       title: { $regex: query, $options: "i" },
     });
@@ -23,21 +26,15 @@ router.get("/", async (req, res) => {
       title: { $regex: query, $options: "i" },
     });
 
-    // Combine results
-    const results = {
-      services,
-      testimonials,
-      gallery: galleryItems,
-    };
-
     if (!services.length && !testimonials.length && !galleryItems.length) {
       return res.status(404).json({ message: "No results found" });
     }
 
-    res.json(results);
+    res.json({ services, testimonials, gallery: galleryItems });
   } catch (error) {
+    console.error("Error performing search:", error);
     res.status(500).json({ error: "Failed to perform search" });
   }
 });
 
-module.exports = router;
+module.exports = app;

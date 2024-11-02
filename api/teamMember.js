@@ -1,7 +1,9 @@
 const express = require("express");
-const { TeamMember, validateTeamMember } = require("../models/teamMember"); // Import model and validation function
+const connectToDatabase = require("../startup/db");
+const { TeamMember, validateTeamMember } = require("../models/teamMember");
 const slugify = require("slugify");
-const router = express.Router();
+const app = express();
+app.use(express.json());
 
 // Helper function to generate unique slugs
 async function generateUniqueSlug(name) {
@@ -9,80 +11,70 @@ async function generateUniqueSlug(name) {
   const existingMember = await TeamMember.findOne({ slug });
 
   if (existingMember) {
-    return `${slug}-${existingMember._id}`; // Append ID to slug if it already exists
+    return `${slug}-${existingMember._id}`;
   }
-
   return slug;
 }
 
-// Helper function for pagination
-function paginate(array, page, limit) {
-  return array.slice((page - 1) * limit, page * limit);
-}
+// Fetch all team members with pagination
+app.get("/", async (req, res) => {
+  await connectToDatabase();
 
-// Public route: Fetch all team members with pagination
-router.get("/", async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Default page is 1
-  const limit = parseInt(req.query.limit) || 6; // Default limit is 6 team members per page
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 6;
 
   try {
-    const teamMembers = await TeamMember.find(); // Fetch all team members
-    if (!teamMembers.length) {
-      return res.status(404).json({ message: "No team members found" });
-    }
+    const totalCount = await TeamMember.countDocuments();
+    const teamMembers = await TeamMember.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
+    const totalPages = Math.ceil(totalCount / limit);
 
-    const paginatedTeamMembers = paginate(teamMembers, page, limit); // Paginate the results
-    const totalPages = Math.ceil(teamMembers.length / limit); // Calculate total pages
-
-    res.json({
-      teamMembers: paginatedTeamMembers,
-      currentPage: page,
-      totalPages: totalPages,
-    });
+    res.json({ teamMembers, currentPage: page, totalPages });
   } catch (error) {
+    console.error("Error fetching team members:", error);
     res.status(500).json({ error: "Failed to fetch team members" });
   }
 });
 
-// Public route: Fetch a single team member by ID
-router.get("/:id", async (req, res) => {
+// Fetch a single team member by ID
+app.get("/:id", async (req, res) => {
+  await connectToDatabase();
+
   try {
     const teamMember = await TeamMember.findById(req.params.id);
-    if (!teamMember) {
+    if (!teamMember)
       return res.status(404).json({ message: "Team member not found" });
-    }
     res.json(teamMember);
   } catch (error) {
+    console.error("Error fetching team member:", error);
     res.status(500).json({ error: "Failed to fetch team member" });
   }
 });
 
-// Protected route: Add a new team member
-router.post("/", async (req, res) => {
+// Add a new team member (admin only)
+app.post("/", async (req, res) => {
+  await connectToDatabase();
+
   const { error } = validateTeamMember(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
-  // Generate a unique slug for the team member's name
   const slug = await generateUniqueSlug(req.body.name);
-
-  const teamMember = new TeamMember({
-    name: req.body.name,
-    role: req.body.role,
-    bio: req.body.bio,
-    image: req.body.image,
-    slug, // Add the slug to the member object
-  });
+  const teamMember = new TeamMember({ ...req.body, slug });
 
   try {
     await teamMember.save();
     res.status(201).json(teamMember);
   } catch (error) {
+    console.error("Error adding team member:", error);
     res.status(500).json({ error: "Failed to add team member" });
   }
 });
 
-// Protected route: Update a team member by ID
-router.put("/:id", async (req, res) => {
+// Update a team member (admin only)
+app.put("/:id", async (req, res) => {
+  await connectToDatabase();
+
   const { error } = validateTeamMember(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
@@ -90,28 +82,30 @@ router.put("/:id", async (req, res) => {
     const teamMember = await TeamMember.findByIdAndUpdate(
       req.params.id,
       req.body,
-      {
-        new: true,
-      }
+      { new: true }
     );
     if (!teamMember)
       return res.status(404).json({ error: "Team member not found" });
     res.json(teamMember);
   } catch (error) {
+    console.error("Error updating team member:", error);
     res.status(500).json({ error: "Failed to update team member" });
   }
 });
 
-// Protected route: Delete a team member by ID
-router.delete("/:id", async (req, res) => {
+// Delete a team member (admin only)
+app.delete("/:id", async (req, res) => {
+  await connectToDatabase();
+
   try {
     const teamMember = await TeamMember.findByIdAndDelete(req.params.id);
     if (!teamMember)
       return res.status(404).json({ error: "Team member not found" });
     res.json({ message: "Team member deleted successfully", teamMember });
   } catch (error) {
+    console.error("Error deleting team member:", error);
     res.status(500).json({ error: "Failed to delete team member" });
   }
 });
 
-module.exports = router;
+module.exports = app;
