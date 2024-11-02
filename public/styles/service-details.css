@@ -48,7 +48,7 @@
 }
 
 .book-now-button {
-  margin-top: 15px; /* Adjust to align below benefits */
+  margin-top: 25px;
   padding: 15px 30px;
   background-color: #25d366;
   color: #fff;
@@ -56,8 +56,6 @@
   border-radius: 30px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s;
-  width: 100%; /* Optional for full-width on smaller screens */
-  max-width: 200px; /* Optional to control size */
 }
 
 .book-now-button:hover {
