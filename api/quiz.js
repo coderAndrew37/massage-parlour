@@ -1,27 +1,16 @@
 require("dotenv").config();
-const express = require("express");
 const connectToDatabase = require("../startup/db");
 const { Lead, validateLead } = require("../models/lead");
 const nodemailer = require("nodemailer");
-const rateLimit = require("express-rate-limit");
 const xss = require("xss");
 const moment = require("moment");
-const app = express.Router();
 
-// Database connection for Vercel serverless functions
-app.use(async (req, res, next) => {
-  await connectToDatabase();
-  next();
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
-// Rate limiting middleware
-const quizLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: { error: "Too many requests, try again after 15 minutes" },
-});
-
-// Daily submission limit check
+// Helper function to check daily submission limit
 async function checkDailySubmissionLimit(email) {
   const startOfDay = moment().startOf("day").toDate();
   const submissionsToday = await Lead.countDocuments({
@@ -31,14 +20,13 @@ async function checkDailySubmissionLimit(email) {
   return submissionsToday >= 3;
 }
 
-// Nodemailer setup
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-});
+module.exports = async (req, res) => {
+  await connectToDatabase();
 
-// Quiz submission
-app.post("/", quizLimiter, async (req, res) => {
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method Not Allowed" });
+  }
+
   const { error } = validateLead(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
@@ -66,6 +54,4 @@ app.post("/", quizLimiter, async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to submit the quiz" });
   }
-});
-
-module.exports = app;
+};

@@ -12,7 +12,7 @@ const cookieParser = require("cookie-parser");
 require("express-async-errors");
 require("./startup/prod")(app); // Production optimizations
 
-// Helmet for security headers with Content Security Policy
+// Helmet for security headers
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -38,47 +38,45 @@ app.use(
   })
 );
 
-// Enable CORS
+// Enable CORS for specific domains
 app.use(
   cors({
     origin: [
       "http://localhost:3000",
       "http://localhost:5500",
       "http://127.0.0.1:5500",
-      "https://your-vercel-app.vercel.app", // Production Vercel domain
+      "https://your-vercel-app.vercel.app", // Replace with your Vercel app URL
     ],
     credentials: true,
   })
 );
 
-// Static file serving
+// Static files
 app.use(express.static(path.join(__dirname, "public")));
-
-// Middleware for handling JSON requests, cookies, and HTML routing
 app.use(express.json());
 app.use(cookieParser());
 
-// Middleware to serve HTML files without requiring the .html extension
+// Serve HTML files without requiring the .html extension
 app.use((req, res, next) => {
   const requestedFile = path.join(__dirname, "public", req.path + ".html");
   if (req.path !== "/" && req.path.indexOf(".") === -1) {
     res.sendFile(requestedFile, (err) => {
-      if (err) next(); // If not found, move to the next middleware
+      if (err) next();
     });
   } else {
     next();
   }
 });
 
-// Route handlers and error handling
-require("./startup/errorHandler")();
+// Import and use all API routes
+require("./routes")(app);
 
 // 404 handler for unmatched routes
 app.use((req, res) => {
   res.status(404).send("Page Not Found");
 });
 
-// Start server for local dev; Vercel will handle in production
+// Start server (Vercel handles in production)
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   winston.info(`Server started on port ${port}`);

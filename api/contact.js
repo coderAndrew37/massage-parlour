@@ -1,33 +1,20 @@
 require("dotenv").config();
-const express = require("express");
 const connectToDatabase = require("../startup/db");
 const { Contact, validateContact } = require("../models/contact");
 const nodemailer = require("nodemailer");
-const rateLimit = require("express-rate-limit");
-const app = express.Router();
 
-// Database connection for Vercel serverless functions
-app.use(async (req, res, next) => {
-  await connectToDatabase();
-  next();
-});
-
-// Rate limiting for Vercel environment
-const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  max: 5,
-  message: "Too many requests from this IP, please try again later.",
-});
-app.use(limiter);
-
-// Nodemailer configuration
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
-// POST route for contact submissions
-app.post("/", async (req, res) => {
+module.exports = async (req, res) => {
+  await connectToDatabase();
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method Not Allowed" });
+  }
+
   const { error } = validateContact(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
@@ -63,6 +50,4 @@ app.post("/", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to submit the contact form" });
   }
-});
-
-module.exports = app;
+};

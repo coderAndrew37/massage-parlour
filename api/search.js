@@ -1,14 +1,14 @@
-// api/search.js
-const express = require("express");
 const connectToDatabase = require("../startup/db");
 const { Service } = require("../models/service");
 const { Testimonial } = require("../models/testimonial");
 const { Gallery } = require("../models/gallery");
-const app = express();
 
-// Search across services, testimonials, and gallery items
-app.get("/", async (req, res) => {
+module.exports = async (req, res) => {
   await connectToDatabase();
+
+  if (req.method !== "GET") {
+    return res.status(405).json({ message: "Method Not Allowed" });
+  }
 
   const query = req.query.q;
   if (!query) {
@@ -32,9 +32,6 @@ app.get("/", async (req, res) => {
 
     res.json({ services, testimonials, gallery: galleryItems });
   } catch (error) {
-    console.error("Error performing search:", error);
     res.status(500).json({ error: "Failed to perform search" });
   }
-});
-
-module.exports = app;
+};
