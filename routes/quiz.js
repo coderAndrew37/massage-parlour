@@ -1,9 +1,11 @@
-require("dotenv").config();
-const connectToDatabase = require("../startup/db");
-const { Lead, validateLead } = require("../models/lead");
+const express = require("express");
+const mongoose = require("mongoose");
+const moment = require("moment");
 const nodemailer = require("nodemailer");
 const xss = require("xss");
-const moment = require("moment");
+const { Lead, validateLead } = require("../models/lead");
+const connectToDatabase = require("../startup/db");
+const router = express.Router();
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -20,13 +22,8 @@ async function checkDailySubmissionLimit(email) {
   return submissionsToday >= 3;
 }
 
-module.exports = async (req, res) => {
-  await connectToDatabase();
-
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method Not Allowed" });
-  }
-
+// Quiz Submission Route
+router.post("/", async (req, res) => {
   const { error } = validateLead(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
@@ -52,6 +49,9 @@ module.exports = async (req, res) => {
       .status(200)
       .json({ message: "Quiz submitted successfully.", recommendation });
   } catch (error) {
+    console.error("Error submitting quiz:", error);
     res.status(500).json({ error: "Failed to submit the quiz" });
   }
-};
+});
+
+module.exports = router;

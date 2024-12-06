@@ -1,4 +1,3 @@
-// api/gallery.js
 const express = require("express");
 const connectToDatabase = require("../startup/db");
 const { Gallery, validateGallery } = require("../models/gallery");

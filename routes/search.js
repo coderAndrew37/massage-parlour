@@ -1,15 +1,13 @@
-const connectToDatabase = require("../startup/db");
+// search.js
+const express = require("express");
 const { Service } = require("../models/service");
 const { Testimonial } = require("../models/testimonial");
 const { Gallery } = require("../models/gallery");
+const connectToDatabase = require("../startup/db");
+const router = express.Router();
 
-module.exports = async (req, res) => {
-  await connectToDatabase();
-
-  if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method Not Allowed" });
-  }
-
+// Search Route
+router.get("/", async (req, res) => {
   const query = req.query.q;
   if (!query) {
     return res.status(400).json({ message: "No search query provided" });
@@ -32,6 +30,9 @@ module.exports = async (req, res) => {
 
     res.json({ services, testimonials, gallery: galleryItems });
   } catch (error) {
+    console.error("Error performing search:", error);
     res.status(500).json({ error: "Failed to perform search" });
   }
-};
+});
+
+module.exports = router;

@@ -1,20 +1,18 @@
-require("dotenv").config();
-const connectToDatabase = require("../startup/db");
-const { Contact, validateContact } = require("../models/contact");
+// contact.js
+const express = require("express");
+const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
+const { Contact, validateContact } = require("../models/contact");
+const connectToDatabase = require("../startup/db");
+const router = express.Router();
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
-module.exports = async (req, res) => {
-  await connectToDatabase();
-
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method Not Allowed" });
-  }
-
+// Contact Form Submission Route
+router.post("/", async (req, res) => {
   const { error } = validateContact(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
@@ -48,6 +46,9 @@ module.exports = async (req, res) => {
 
     res.status(201).json({ message: "Message sent successfully" });
   } catch (error) {
+    console.error("Error submitting contact form:", error);
     res.status(500).json({ error: "Failed to submit the contact form" });
   }
-};
+});
+
+module.exports = router;
