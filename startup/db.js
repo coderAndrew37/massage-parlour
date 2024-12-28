@@ -10,10 +10,7 @@ module.exports = async function connectToDatabase() {
 
   // Connect to MongoDB
   try {
-    await mongoose.connect(db, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(db);
     console.info(`Connected to MongoDB at ${db}`);
   } catch (err) {
     console.error(`Could not connect to MongoDB: ${err.message}`);

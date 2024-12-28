@@ -1,5 +1,6 @@
 import { baseURL } from "./constants.js";
 import "./constants.js";
+/*
 import {
   animateServiceDetails,
   animateAdditionalImages,
@@ -7,6 +8,7 @@ import {
   animateRelatedServices,
 } from "./serviceDetailsAnimations.js";
 
+*/
 // Extract slug from the URL
 const urlParams = new URLSearchParams(window.location.search);
 const slug = urlParams.get("slug");
@@ -36,12 +38,12 @@ if (!slug) {
       document.getElementById("service-image").src =
         service.image || "images/placeholder.jpg";
 
-      document.getElementById("service-title").style.display = "block";
-      document.getElementById("service-description").style.display = "block";
-      document.getElementById("service-price-container").style.display =
-        "block";
-      document.getElementById("service-image").style.display = "block";
-      document.querySelector(".book-now-button").style.display = "block";
+      // Show elements
+      document.getElementById("service-title").style.opacity = 1;
+      document.getElementById("service-description").style.opacity = 1;
+      document.getElementById("service-price-container").style.opacity = 1;
+      document.getElementById("service-image").style.opacity = 1;
+      document.querySelector(".book-now-button").style.opacity = 1;
 
       // Hide skeletons after content is loaded
       document.querySelectorAll(".skeleton").forEach((skeleton) => {
@@ -85,7 +87,7 @@ if (!slug) {
           colDiv.appendChild(imgElement);
           additionalImagesContainer.appendChild(colDiv);
         });
-        animateAdditionalImages();
+        // animateAdditionalImages();
       } else {
         additionalImagesContainer.innerHTML =
           "<p>No additional images available.</p>";
@@ -115,7 +117,7 @@ if (!slug) {
         videoSection.style.display = "none";
       }
 
-      animateServiceDetails();
+      //animateServiceDetails();
       renderRelatedServices(service.relatedServiceIds || []);
       renderServiceTestimonials(service._id);
     } catch (error) {
@@ -175,7 +177,7 @@ if (!slug) {
         relatedServicesHTML;
 
       // Trigger GSAP animation for related services once loaded
-      animateRelatedServices();
+      // animateRelatedServices();
     } catch (error) {
       console.error("Error fetching related services:", error);
       document.querySelector(".js-related-services-grid").innerHTML =
@@ -220,7 +222,7 @@ if (!slug) {
         testimonialsHTML;
 
       // Trigger GSAP animation for testimonials once they are rendered
-      animateServiceTestimonials();
+      //animateServiceTestimonials();
     } catch (error) {
       console.error("Error fetching testimonials:", error);
       document.querySelector(".js-testimonials-grid").innerHTML =

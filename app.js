@@ -51,31 +51,38 @@ app.use(
   })
 );
 
-// Static files
+// Static files middleware
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(cookieParser());
 
-// Serve HTML files without requiring the .html extension
+// Middleware to remove .html extension
 app.use((req, res, next) => {
-  const requestedFile = path.join(__dirname, "public", req.path + ".html");
-  if (req.path !== "/" && req.path.indexOf(".") === -1) {
+  if (!path.extname(req.path)) {
+    const requestedFile = path.join(__dirname, "public", req.path + ".html");
     res.sendFile(requestedFile, (err) => {
-      if (err) next();
+      if (err) next(); // Continue if file not found
     });
   } else {
-    next();
+    next(); // Continue if path already has an extension
   }
 });
+
 // Import and use all API routes
-require("./routes")(app);
+require("./startup/routes.js")(app);
 
 // 404 handler for unmatched routes
 app.use((req, res) => {
-  res.status(404).send("Page Not Found");
+  res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
 });
 
-// Start server (Vercel handles in production)
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  winston.error(err.message, err);
+  res.status(500).send("Something went wrong on the server.");
+});
+
+// Start server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   winston.info(`Server started on port ${port}`);

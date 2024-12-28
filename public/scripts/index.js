@@ -6,6 +6,11 @@ import "./localStorageHandler.js";
 import { search } from "./fetchContent.js";
 import "./quiz.js";
 import "./contactFormValidation.js";
+import {
+  renderServicesGrid,
+  renderTestimonialsGrid,
+  renderGalleryGrid,
+} from "./fetchContent.js";
 
 // Save scroll position before page unload (only on reload, not on form submit)
 window.addEventListener("beforeunload", function (e) {
@@ -51,7 +56,6 @@ function restoreScrollAfterContent() {
 
 // Call restoreScrollAfterContent after DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
-  animateHero(); // Animate hero section
   restoreScrollAfterContent(); // Load content and restore scroll position after it's done
 });
 

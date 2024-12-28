@@ -51,7 +51,7 @@ function scrollToSection(sectionId) {
 
 // Fetch and render services
 // Fetch and render services
-async function renderServicesGrid(page = 1) {
+export async function renderServicesGrid(page = 1) {
   const limit = getElementsPerPage("services");
   const servicesGrid = document.querySelector(".js-services-grid");
 
@@ -105,7 +105,7 @@ async function renderServicesGrid(page = 1) {
 }
 
 // Fetch and render testimonials
-async function renderTestimonialsGrid(page = 1) {
+export async function renderTestimonialsGrid(page = 1) {
   const limit = getElementsPerPage("testimonials");
   const testimonialsGrid = document.querySelector(".js-testimonials-grid");
 
@@ -158,7 +158,7 @@ async function renderTestimonialsGrid(page = 1) {
 }
 
 // Fetch and render gallery
-async function renderGalleryGrid(page = 1) {
+export async function renderGalleryGrid(page = 1) {
   const limit = getElementsPerPage("gallery");
   const galleryGrid = document.querySelector(".js-gallery-grid");
 
@@ -210,7 +210,7 @@ async function renderGalleryGrid(page = 1) {
 /*==================== FAQs Section ==============================*/
 
 // Fetch and render FAQs
-async function renderFAQs() {
+export async function renderFAQs() {
   const faqContainer = document.getElementById("faqAccordion");
 
   try {
