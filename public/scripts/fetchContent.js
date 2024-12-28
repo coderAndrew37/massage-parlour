@@ -11,18 +11,25 @@ console.log(`The baseURL:${baseURL}`);
 // Helper function for retrying fetch requests
 async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
   try {
+    console.log("Fetching URL:", url); // Debug URL
     const response = await fetch(url, options);
     if (!response.ok) {
+      console.error(
+        `Error Response: ${response.status} - ${response.statusText}`
+      );
       throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
-    return response.json();
+    const data = await response.json();
+    console.log("Fetched data:", data); // Debug response
+    return data;
   } catch (error) {
+    console.error("Fetch error:", error.message); // Debug fetch errors
     if (retries > 0) {
       console.warn(`Retrying... (${retries} retries left)`);
       await new Promise((resolve) => setTimeout(resolve, delay));
-      return fetchWithRetry(url, options, retries - 1, delay); // Retry after delay
+      return fetchWithRetry(url, options, retries - 1, delay);
     } else {
-      throw error; // If no retries left, throw the error
+      throw error; // No retries left
     }
   }
 }
